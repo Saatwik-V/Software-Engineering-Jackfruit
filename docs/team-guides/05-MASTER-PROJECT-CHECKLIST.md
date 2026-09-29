@@ -56,10 +56,10 @@ Mark each row done only when **all** listed items are true — a sprint isn't "d
 - [ ] Repo created, protected `main`, all 4 branches created (Saatwik)
 - [ ] CI skeleton green on `main` (Saatwik)
 - [ ] GitHub Project board created with Sprint 1–2 issues (Saatwik)
-- [ ] Archive binary format agreed and documented (Saatwik + Yuvraj, reviewed by Tanmayi + Vibhav)
-- [ ] SRS v0.1: Introduction + Overall Description (Saatwik), UC-02 (Tanmayi), UC-03 (Yuvraj), UC-04 + Security Requirements section (Vibhav)
-- [ ] System architecture + use-case diagram drafted (Saatwik)
-- [ ] Testing conventions doc (Tanmayi)
+- [ ] Archive binary format agreed and documented in `docs/design/archive-format.md` (Saatwik + Yuvraj, reviewed by Tanmayi + Vibhav)
+- [ ] SRS v0.1 mapped to `SRS_Template for SE.docx`: 16 FRs (`JACK-F-001..016`), 5 NFRs (`JACK-NF-001..005`), 5 Security Reqs (`JACK-SR-001..005`), 2 UML Use-Case diagrams, and RTM table
+- [ ] SAD v0.1 mapped to `SAD_Template.docx`: Layered architecture, Component UML, STRIDE threat model, 2 UML Sequence diagrams, and C++ API interfaces (Saatwik)
+- [ ] Testing conventions & initial Software Test Plan (STP) mapped to `Test_Plan_Template for SE.docx` (Tanmayi)
 
 ### Sprint 2 — Core algorithm & foundations
 - [ ] Frequency table, Huffman tree, code generation, `BitWriter` — unit tested (Saatwik)
