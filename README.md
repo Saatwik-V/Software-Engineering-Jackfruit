@@ -104,8 +104,9 @@ ctest --test-dir build --output-on-failure -C Release
 ## Documentation Links
 
 All project documentation is tracked in the repository:
-- [Software Requirements Specification (SRS)](docs/srs/)
-- [Architecture & UML Design](docs/design/)
+- [Software Requirements Specification (SRS v0.1)](docs/srs/srs-v0.1.md) ([Download PDF](docs/srs/srs-v0.1.pdf))
+- [System Architecture & UML Design (v0.1)](docs/design/architecture-v0.1.md) ([Download PDF](docs/design/architecture-v0.1.pdf))
+- [Binary Archive Format Specification (`.jack`)](docs/design/archive-format.md) ([Download PDF](docs/design/archive-format.pdf))
 - [Verification & Validation Plan](docs/validation/)
 - [Team Member Guides & Setup Checklists](docs/team-guides/)
   - [00 - Setup Guide (Saatwik)](docs/team-guides/00-SETUP-GUIDE-Saatwik.md)
