@@ -137,5 +137,5 @@ When parsing a `.jack` archive, `ArchiveReader` and `IntegrityValidator` must en
 |---|---|:---:|---|
 | Architecture & Compression Lead | Saatwik | **Author / Approved** | Encoder & `BitWriter` designed against this spec. |
 | Archive & Statistics Lead | Yuvraj | **Co-Author / Pending Review** | Serializer & parser logic mirrors this layout. |
-| Testing & Decompression Lead | Tanmayi | **Pending Review** | Confirmed MSB-first `BitReader` agreement. |
+| Testing & Decompression Lead | Tanmayi | **Approved** | Confirmed MSB-first `BitReader` agreement. |
 | Security & Integrity Lead | Vibhav | **Pending Review** | Confirmed CRC-32 field position & bounds checks. |
