@@ -1,61 +1,90 @@
 # Document 2 — End-to-End Guide: Tanmayi
 
-**Use case owned:** UC-02 — Decompress File (bit reader → decoder → reconstruction)
-**Secondary role:** Testing & Coverage Lead (you own the team's unit-test discipline and coverage reporting)
-**Your branch:** `feature/tanmayi-decompression`
+**Use case owned:** UC-02 — Decompress File (bit reader → decoder → byte reconstruction)  
+**Secondary role:** Testing & Coverage Lead (GoogleTest architecture, test plan, CI coverage monitoring)  
+**Your branch:** `feature/tanmayi-decompression`  
+**Authority:** Aligned with `SE_Mini_Project_Delivereables_Part-1.pdf` and `SE_Mini_Project_Delivereables_Part-2.pdf`.
 
-This is your ground truth for the whole semester — what to build, when, in what order, and on which branch. Read it once fully, then follow it week by week. Ask Saatwik if anything here conflicts with what's actually in the repo (this doc is the plan; the repo is the truth once things start moving).
+This is your master guide for project execution — what to build, when, in what order, and on which branch.
 
 ---
 
-## 1. Your module, precisely
+## 1. Your Module & Testing Scope
 
-You own turning a valid archive back into the original file:
-- `BitReader` — the mirror of Saatwik's `BitWriter`. **Get his bit-ordering convention in writing before you build this** (Sprint 1–2); if you guess and he guesses differently, nothing will decode correctly and you'll lose a sprint finding out why.
-- Decoder — bitstream → original bytes, using the Huffman tree/codes reconstructed from Yuvraj's archive metadata.
-- Reconstruction — writing the decoded bytes back out as the original file, verified byte-for-byte.
-- The interactive "Decompress" menu screen (prompt for archive path + output path, progress, success/failure message).
+You own turning a valid compressed archive back into an exact byte-identical replica of the original file:
+- **BitReader Module:** The mirror of Saatwik's `BitWriter`. Sequentially extracts bits from bytes following the agreed MSB-first packing convention up to `total_bits` boundary without consuming padding bits.
+- **Huffman Decoding Engine:** Traverses the reconstructed prefix tree for each input bit until a leaf node is encountered, emitting the decoded 8-bit symbol.
+- **File Reconstruction:** Emits decoded byte stream to target output file; verifies byte-exact integrity.
+- **Decompress CLI Screen:** Prompts for input archive and output path, provides status feedback, and reports restoration success.
+- **Testing & Quality Leadership:**
+  - Maintain the IEEE Software Test Plan (`docs/validation/test-plan-v0.1.md` / `test-plan-v0.1.pdf`).
+  - Enforce GoogleTest conventions across the team (`docs/design/testing-conventions.md`).
+  - Wire automated code coverage (gcov/lcov) into CI and ensure the codebase hits **≥ 80% line coverage** and **≥ 70% branch coverage**.
 
-## 2. Dependencies — who needs what from whom
+---
 
-- You need Saatwik's `BitWriter` convention documented before you start `BitReader` (Sprint 1–2).
-- You need Yuvraj's `ArchiveReader` (parses header/metadata) to reconstruct the Huffman tree before you can decode anything real (Sprint 3–4).
-- You need a real archive from Saatwik's compress command (his Sprint 3 milestone) to test your decoder end-to-end — this is why his Sprint 3 deadline matters to you directly.
-- As Testing Lead, everyone depends on you to set up the coverage tooling (gcov/lcov) in CI during Sprint 2, before code volume grows.
+## 2. Dependencies & Critical Path
 
-## 3. Sprint-by-sprint plan
+- **Bit Packing Agreement:** You follow the MSB-first bit order specified in `docs/design/archive-format.md` (Signed Off).
+- **Metadata Deserialization:** You receive the reconstructed tree and total payload bit count from Yuvraj's `ArchiveReader` (`src/archive/archive_reader.cpp`).
+- **Synthetic Testing First:** You do NOT need to wait for Saatwik's encoder to test `BitReader` and `Decoder`; build unit tests against hand-crafted synthetic bit sequences first.
+- **Sprint 1 Team Milestone:** Partner with Saatwik to prove **100% byte-identical round-trip restoration** by October 23 for the required 1-minute video demo.
 
-| Sprint (Week) | What you build | Branch/PR | Deliverable & Definition of Done |
-|---|---|---|---|
-| **1** | Read and sign off on the archive format doc (Saatwik/Yuvraj draft it — you review it from a "can I decode this" angle). Write your SRS contribution: Section 4.2 for UC-02 functional requirements (`JACK-F-005` through `JACK-F-008`). Set up GoogleTest conventions and the initial Software Test Plan (STP) using `docs/meeting-notes/Test_Plan_Template for SE.docx` — deliver as `docs/design/testing-conventions.md` (or initial `docs/validation/software-test-plan.md`). | PR: docs only | Testing conventions/STP doc merged; UC-02 requirements in SRS v0.1. |
-| **2** | `BitReader` (exact reverse of `BitWriter`): unit tests against **manually crafted bitstreams you write yourself**, not against Saatwik's encoder yet — this decouples you from his schedule. Also: wire gcov/lcov coverage collection into the CI workflow (coordinate with Yuvraj since he owns the CI pipeline). | `feature/tanmayi-decompression` → PR #1 | `BitReader` round-trips correctly against hand-built test bitstreams; CI now reports a coverage percentage on every PR. |
-| **3** | Decoder logic: reconstruct Huffman tree from metadata + decode bitstream to bytes, still against synthetic/mocked archive data if Yuvraj's `ArchiveReader` isn't ready yet. Start drafting integration tests against a real archive as soon as Saatwik's compress command lands. | PR #2 | Decoder passes unit tests on synthetic data. |
-| **4** | Full integration: real `ArchiveReader` (Yuvraj) + your decoder + Saatwik's real archives → **compress → decompress round trip produces byte-identical output**. Wire up the interactive "Decompress" CLI screen. This is your team milestone sprint. | PR #3 | Round trip verified on text, binary, empty, and large files. Flag this working end-to-end to the whole team — Yuvraj and Vibhav's later sprints assume this works. |
-| **5** | Write 10 manual test cases for UC-02 (valid archive, empty original, one-byte original, all-256-value original, truncated header, truncated payload, invalid magic/version, wrong output path, checksum mismatch, malformed metadata). Expand the Software Test Plan (STP) based on `Test_Plan_Template for SE.docx` and build the integration/system test suite structure in `tests/integration/` and `tests/system/` for the whole project — this is your Testing Lead responsibility, not just your own module. | PR into `docs/validation/` + `tests/` | 10 test cases documented; STP updated; integration/system test folders scaffolded for all four modules. |
-| **6** | Quality hardening as Testing Lead: get the team to a coverage target (≥80% line / ≥70% branch on core modules — adjust after your first baseline, don't guess a number nobody measured). Chase down any module below target. Fix your own SonarCloud findings. | Review + fix PRs | Coverage report published in CI for every PR; target met or documented reason given for gaps. |
-| **7** | Help finalize integration/system tests across all four modules ahead of manual execution. Performance/robustness pass on your decoder against malformed inputs (coordinate with Vibhav, since malformed-input handling overlaps with his security work). | PR: fixes | Decoder never crashes on malformed input — always fails safely with a clear error. |
-| **8** | Execute your 10 manual UC-02 test cases (fill Actual Result + Pass/Fail). Compile the final coverage report and automated-test summary for the report. Update RTM for your requirements. Rehearse the "testing & coverage" part of the demo. | Final PR + report doc | All JACK-F-005..008 requirements traced to code, tests, and manual results; coverage report finalized. |
+---
 
-## 4. What you personally must write in the shared documents
+## 3. Official Timeline & Deliverables Plan
 
-- **SRS:** Section 4.2 (UC-02 description and functional requirements `JACK-F-005` through `JACK-F-008`).
-- **Design doc (SAD):** Class diagram + Sequence Diagram 2 (Section 4.2) for decompression.
-- **Testing conventions doc (Sprint 1) & Software Test Plan (STP):** Drafted from `docs/meeting-notes/Test_Plan_Template for SE.docx`, plus the **coverage report** (ongoing, finalized Sprint 8) — these are yours as Testing Lead.
-- **Validation doc:** Your 10 UC-02 test cases in the RTM/STP format.
+### Phase 1: Engineering Documents (Part-1 — In Progress / Final Sign-off)
+- [x] Review and sign off on binary archive specification (`docs/design/archive-format.md`).
+- [x] Author GoogleTest conventions (`docs/design/testing-conventions.md`).
+- [x] Contribute UC-02 requirements (`JACK-F-005..008`) to IEEE SRS (`docs/srs/srs-v0.1.pdf`).
+- [ ] **Finalize Software Test Plan:** Incorporate the 10 concrete test cases and updated 2-Sprint schedule from `docs/meeting-notes/review-feedback-tanmayi-testplan.md` into `docs/validation/test-plan-v0.1.md`.
+- [ ] Compile `docs/validation/test-plan-v0.1.pdf` via `python3 scripts/generate_docs_pdf.py` and submit PR.
 
-## 5. PR checklist (use for every PR you open)
+---
 
-- [ ] Branched from latest `main`
-- [ ] Unit tests added for new logic
-- [ ] Builds clean, `ctest` passes locally, coverage didn't regress
-- [ ] PR description references the GitHub issue number
-- [ ] At least one teammate reviewed and approved
-- [ ] CI green before merge
-- [ ] SRS/design doc updated if this PR changes a requirement or interface
+### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
+- [ ] In the linked GitHub Project board, verify your assigned UC-02 backlog items:
+  - `JACK-F-005` (Archive header reading & magic validation) — **3 SP**
+  - `JACK-F-006` (Huffman tree reconstruction from archive) — **5 SP**
+  - `JACK-F-007` (BitReader boundary bit parsing) — **3 SP**
+  - `JACK-F-008` (Byte-identical file reconstruction) — **5 SP**
+  - `JACK-SR-001` / `JACK-SR-003` (Malformed archive & truncation safety) — **3 SP**
+- [ ] Participate in dry-run practice week (12th–16th Oct) testing branch workflows.
+- [ ] Confirm backlog lock on 19th Oct.
 
-## 6. Pitfalls specific to your role
+---
 
-- Don't wait for Saatwik's real encoder before writing any tests — build your own synthetic bitstreams so you're never idle waiting on someone else's branch.
-- As Testing Lead, don't let "unit tests" be the only kind of test that exists by Sprint 6 — integration and system tests are explicitly required by the course and are easy to forget until the last week.
-- Don't let coverage numbers be vanity metrics — a module at 95% line coverage with only happy-path tests is worse evidence than 75% with real edge cases. Say so if you see it.
-- Fill "Actual Result" and "Test Result" in manual test sheets only after you've actually run the test — never backfill these to look complete.
+### Phase 2: Sprint 1 — Core Working Product (19th Oct – 23rd Oct 2026)
+**Goal:** Implement `BitReader` and `Decoder`, achieve round-trip decompression against Saatwik's compressor, and co-deliver the 1-minute working demo video.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (19–20 Oct)** | Implement `BitReader` class | `include/io/bit_reader.hpp`, `src/io/bit_reader.cpp` |
+| **Day 2–3 (20–21 Oct)** | Implement `Decoder` module | `include/decompression/decoder.hpp`, `src/decompression/decoder.cpp` |
+| **Day 3 (21 Oct)** | Unit test `BitReader` & `Decoder` against synthetic vectors | `tests/unit/test_bit_reader.cpp`, `tests/unit/test_decoder.cpp` |
+| **Day 4 (22 Oct)** | Raise PR from `feature/tanmayi-decompression` | PR with clean tests and CI pass; review from Saatwik |
+| **Day 5 (23 Oct)** | **Round-Trip Verification:** Test `compress` -> `decompress` on text and binary files (`cmp sample.txt restored.txt`) | Zero differences confirmed |
+| **Day 5 (23 Oct)** | **Assist Sprint 1 Demo Video:** Validate CLI commands shown in the 1-minute working demo video | Upload to repo |
+
+---
+
+### Phase 2: Sprint 2 — Full Feature Product & Development Freeze (26th Oct – 30th Oct 2026)
+**Goal:** Implement coverage reporting, expand integration/system test suites, execute manual test cases, verify quality targets (≥80% coverage), assist 2-minute demo video, and freeze development.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (26–27 Oct)** | Wire `gcov`/`lcov` coverage reporting into GitHub Actions CI | `.github/workflows/ci.yml`, HTML coverage reports |
+| **Day 2–3 (27–28 Oct)** | Build end-to-end integration and system test suites | `tests/integration/test_roundtrip.cpp`, `tests/system/test_cli_e2e.cpp` |
+| **Day 3–4 (28–29 Oct)** | Execute 10 baseline test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) | Record results in `docs/validation/test-results.md` |
+| **Day 4 (29 Oct)** | Ensure team meets quality gate (≥80% line coverage, ≥70% branch coverage) | Chase down and add tests for uncovered branches |
+| **Day 5 (30 Oct)** | **Assist Sprint 2 Demo Video:** Verify all test cases and decompress flows in 2-minute video | Demo video completed |
+| **Day 5 (30 Oct)** | **Development Freeze:** Finalize testing documentation, lock branch | Ready for final evaluation |
+
+---
+
+## 4. Testing Lead Best Practices
+
+1. **Test Edge Cases First:** Test `BitReader` against streams with 1, 7, 8, 9, and 13 bits to ensure trailing bit padding is never misread as valid data.
+2. **Deterministic Byte Equality:** Decompression is successful **only** when `diff` or `cmp` returns exit code 0.
+3. **No Unexecuted Test Records:** Fill in "Actual Result" and "Pass/Fail" only after actually executing the test case against the compiled binary.

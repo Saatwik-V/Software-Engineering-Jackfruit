@@ -1,59 +1,89 @@
 # Document 4 — End-to-End Guide: Vibhav
 
-**Use case owned:** UC-04 — Validate Archive Integrity (checksum/CRC, structural validation, corruption handling)
-**Secondary role:** Security & SonarCloud Lead — you own the team's security-validation evidence
-**Your branch:** `feature/vibhav-integrity`
+**Use case owned:** UC-04 — Validate Archive Integrity (CRC-32 checksum, structural validation, corruption detection)  
+**Secondary role:** Security & Robustness Lead (STRIDE threat model, memory safety sanitizers, malformed input fuzz testing)  
+**Your branch:** `feature/vibhav-integrity`  
+**Authority:** Aligned with `SE_Mini_Project_Delivereables_Part-1.pdf` and `SE_Mini_Project_Delivereables_Part-2.pdf`.
 
-This is your ground truth for the whole semester — what to build, when, in what order, and on which branch. Read it once fully, then follow it week by week.
+This is your master guide for project execution — what to build, when, in what order, and on which branch.
 
 ---
 
-## 1. Your module, precisely
+## 1. Your Module & Security Scope
 
-You own making sure the tool never trusts a file blindly:
-- Checksum/CRC calculation and verification.
-- Structural validation of an archive: header well-formed, version supported, declared sizes plausible, payload boundaries consistent.
-- Safe rejection of malformed/truncated/corrupted archives — with a clear error message, never a crash and never silent data corruption.
-- The interactive "Validate" menu screen (prompt for archive path, clear valid/corrupt report).
-- Team-wide security review: as Security Lead, you keep an eye on every module's handling of untrusted input (file paths, declared sizes, archive fields) — not just your own.
+You own making sure the tool never trusts an external or corrupted file blindly:
+- **CRC-32 Engine:** Implement standard IEEE 802.3 CRC-32 calculation (`0xEDB88320` polynomial) to compute checksums over uncompressed/payload data and compare against stored archive headers.
+- **Structural Integrity Validator:** Validate header fields (magic bytes `0x4A41434B`, version `0x01`, reasonable sizes, declared bit counts vs file length) before any memory allocation or decoding occurs.
+- **Corrupted Input Protection:** Ensure safe, graceful rejection of truncated, malformed, or tampered archives without crashes, undefined behavior, or memory leaks.
+- **Integrity CLI Screen:** Interactive menu view and CLI command (`jackfruit validate <file.jack>`) returning exit code 0 for valid archives and exit code 3 for corrupt ones.
+- **Security Leadership:**
+  - Enforce AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in local testing and CI.
+  - Execute malformed input fuzzing tests.
+  - Author the security review report (`docs/validation/security-review.md`).
 
-## 2. Dependencies — who needs what from whom
+---
 
-- You need Yuvraj's header/metadata parsing (`ArchiveReader`) as a foundation for structural validation — your Sprint 5 depends on his Sprint 2 and Sprint 4 work.
-- You benefit from Saatwik's and Tanmayi's real archives (from Sprint 3–4) to test against real corruption scenarios, not just synthetic ones.
-- Everyone benefits from your Sprint 2 checksum module early, since Yuvraj's archive format needs a checksum field defined from the start.
+## 2. Dependencies & Critical Path
 
-## 3. Sprint-by-sprint plan
+- **Independent Start in Sprint 1:** Your standalone `CRC32` module can be developed and unit tested immediately against standard test vectors with zero external dependencies.
+- **Foundation for Archive Format:** Your CRC-32 checksum specification is embedded in the 18-byte header built by Yuvraj's `ArchiveWriter`.
+- **Validation on Top of Reader:** In Sprint 2, your `IntegrityValidator` uses Yuvraj's `ArchiveReader` to inspect headers and compute checksum comparisons.
+- **Sprint 1 Team Milestone:** Deliver the tested CRC-32 module so the compression pipeline can write real checksums into archives for the Sprint 1 demo video.
 
-| Sprint (Week) | What you build | Branch/PR | Deliverable & Definition of Done |
-|---|---|---|---|
-| **1** | Contribute the checksum/integrity field to the archive format discussion (Saatwik + Yuvraj) — you're the one who has to actually verify it, so make sure it's specified precisely. Write your SRS contribution: Section 4.4 for UC-04 description and functional requirements (`JACK-F-013` through `JACK-F-016`), plus Section 5.1 Security Objectives and Security Requirements (`JACK-SR-001` through `JACK-SR-005`). Review SAD Section 3.9 (STRIDE Threat Model). | PR: docs only | Security requirements and STRIDE threat model signed off in SRS v0.1 / SAD v0.1. |
-| **2** | Checksum/CRC module: calculate + verify, with unit tests against known vectors, empty data, and a deliberately mismatched checksum. This is independent of everyone else — build and test it standalone now. | `feature/vibhav-integrity` → PR #1 | Checksum module fully unit-tested in isolation. |
-| **3–4** | While others integrate their vertical slices, start structural-validation logic against Yuvraj's `ArchiveReader` as soon as it's usable: reject bad magic bytes, unsupported versions, and impossible size fields before allocating memory or reading data (this is the actual security-relevant part — prevent overflow/out-of-bounds behavior from untrusted archive fields). | PR #2 | Validator rejects a set of hand-crafted malformed archives safely (no crash, no undefined behavior). |
-| **5** | Integrate checksum verification + structural validation into one "Validate Archive Integrity" flow. Wire up the interactive "Validate" CLI screen with a clear valid/corrupt report. Write 10 manual test cases for UC-04 (valid archive, bad magic, unsupported version, truncated header, impossible size, truncated payload, bad checksum, invalid tree metadata, trailing-garbage policy, repeated validation). | PR into `docs/validation/` | Validate command works end-to-end on both good and deliberately broken archives. |
-| **6** | Security pass across the whole codebase (your lead responsibility, not just your module): check every place a file path, size field, or length comes from user/archive input and confirm it's validated before use. Run sanitizers (ASan/UBSan) against the full pipeline if not already covered. Address your own SonarCloud security hotspots first, then flag any you spot in other modules to their owners. | Review + fix PRs | A short `docs/validation/security-review.md` listing what was checked and what was found/fixed. |
-| **7** | Fuzz/malformed-input pass: feed the compress/decompress/validate pipeline a batch of corrupted/truncated files and confirm nothing crashes or misbehaves. Coordinate with Tanmayi since this overlaps with her robustness testing. | PR: fixes | No crashes on the malformed-input batch; every failure path returns a clean error. |
-| **8** | Execute your 10 manual UC-04 test cases (fill Actual Result + Pass/Fail). Finalize the security review doc for the report. Update RTM for your requirements. Rehearse the "security & robustness" part of the demo. | Final PR + report doc | All JACK-F-013..016 and JACK-SR-001..005 requirements traced to code, tests, and manual results; security evidence section ready. |
+---
 
-## 4. What you personally must write in the shared documents
+## 3. Official Timeline & Deliverables Plan
 
-- **SRS:** Section 4.4 (UC-04 description and functional requirements `JACK-F-013` to `016`), Section 5.1.1 (Security Objectives), and Section 5.1.2 (Security Requirements `JACK-SR-001` to `JACK-SR-005`).
-- **Design doc (SAD):** Section 3.9 (STRIDE Threat Model) and class/sequence diagram for archive validation.
-- **Validation doc:** Your 10 UC-04 test cases, plus the security review write-up.
+### Phase 1: Engineering Documents (Part-1 — Completed Baseline)
+- [x] Contribute CRC-32 checksum specifications to `docs/design/archive-format.md`.
+- [x] Contribute UC-04 requirements (`JACK-F-013..016`) and Security Objectives/Requirements (`JACK-SR-001..005`) to IEEE SRS (`docs/srs/srs-v0.1.pdf`).
+- [x] Author STRIDE Threat Model (Section 3.9) in IEEE SAD (`docs/design/architecture-v0.1.pdf`).
+- [x] Review security validation section in Tanmayi's Software Test Plan.
 
-## 5. PR checklist (use for every PR you open)
+---
 
-- [ ] Branched from latest `main`
-- [ ] Unit tests added for new logic
-- [ ] Builds clean, `ctest` passes locally
-- [ ] PR description references the GitHub issue number
-- [ ] At least one teammate reviewed and approved
-- [ ] CI green before merge
-- [ ] SRS/design doc updated if this PR changes a requirement or interface
+### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
+- [ ] In the linked GitHub Project board, verify your assigned backlog items:
+  - CRC32 Checksum Engine (`src/security/crc32.cpp`) — **3 SP**
+  - `JACK-F-013` (Structural archive validation) — **2 SP**
+  - `JACK-F-014` (Checksum recalculation & mismatch detection) — **3 SP**
+  - `JACK-F-015` (Interactive validate display screen) — **2 SP**
+  - `JACK-F-016` (Command-line `--validate` execution) — **3 SP**
+  - `JACK-SR-001` to `005` (Security & sanitizer hardening) — **5 SP**
+- [ ] Participate in dry-run practice week (12th–16th Oct) testing PR creation and code review.
+- [ ] Confirm backlog lock on 19th Oct.
 
-## 6. Pitfalls specific to your role
+---
 
-- Don't limit "security validation" to happy-path checksum matching — the actual grading interest is in **malformed-input handling**: truncated files, bad lengths, impossible values. Build a deliberately-broken test archive collection early and reuse it all semester.
-- Don't wait until Sprint 6 to look at other people's input-handling — a quick note to a teammate in Sprint 3 ("this length field should be bounds-checked before use") is cheaper than finding it during the security pass.
-- Don't treat "it didn't crash on my machine" as proof — use ASan/UBSan, they catch what manual testing misses.
-- Don't skip writing the security requirements section of the SRS just because it feels like an afterthought category — it's an explicit graded requirement (`6.3 Security Requirements`) and it's yours.
+### Phase 2: Sprint 1 — Core Working Product (19th Oct – 23rd Oct 2026)
+**Goal:** Deliver standalone CRC-32 calculation engine, integrate with Saatwik's compressor, and support the 1-minute working demo video.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (19–20 Oct)** | Implement `CRC32` module using IEEE 802.3 standard | `include/security/crc32.hpp`, `src/security/crc32.cpp` |
+| **Day 2–3 (20–21 Oct)** | Unit tests against known CRC-32 test vectors (empty string, `"123456789"`, binary buffers) | `tests/unit/test_crc32.cpp` |
+| **Day 3–4 (21–22 Oct)** | Support Saatwik in integrating CRC calculation into the compression workflow | Checksum stored in `.jack` header |
+| **Day 4 (22 Oct)** | Raise PR from `feature/vibhav-integrity` | PR reviewed and merged into `main` |
+| **Day 5 (23 Oct)** | **Support Sprint 1 Demo Video:** Verify valid checksums are generated in the 1-minute working demo | Video demo ready |
+
+---
+
+### Phase 2: Sprint 2 — Full Feature Product & Development Freeze (26th Oct – 30th Oct 2026)
+**Goal:** Implement `IntegrityValidator` and CLI command, configure memory sanitizers (ASan/UBSan), execute malformed input fuzz suite, author security review, and freeze development.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (26–27 Oct)** | Implement `IntegrityValidator` (structural checks + CRC comparison) | `include/security/integrity_validator.hpp`, `src/security/integrity_validator.cpp` |
+| **Day 2–3 (27–28 Oct)** | Build interactive Validate screen and `jackfruit validate` command (exit codes 0 and 3) | `src/cli/validate_view.cpp` |
+| **Day 3–4 (28–29 Oct)** | Configure AddressSanitizer and UndefinedBehaviorSanitizer test runs; run malformed input fuzz tests (`TC-VALID-01`, `TC-SEC-01`) | Zero memory leaks / buffer overflows |
+| **Day 4 (29 Oct)** | Author `docs/validation/security-review.md` documenting threat mitigations and sanitizer evidence | Security review report |
+| **Day 5 (30 Oct)** | **Support Sprint 2 Demo Video:** Showcase corruption detection and graceful error handling in 2-minute video | Demo video completed |
+| **Day 5 (30 Oct)** | **Development Freeze:** Lock security modules, finalize security documentation | Ready for final evaluation |
+
+---
+
+## 4. Security Lead Best Practices
+
+1. **Never Crash on Bad Input:** An untrusted or malformed file must **always** yield a clean error message and return code, never `SIGSEGV` or `std::bad_alloc`.
+2. **Bounds-Check Header Declared Lengths:** Check that payload sizes declared in headers do not exceed the actual file size on disk before allocating buffers.
+3. **Verify with Sanitizers:** Always run tests with `-fsanitize=address,undefined` to guarantee memory safety.

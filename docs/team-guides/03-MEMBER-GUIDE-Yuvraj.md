@@ -1,61 +1,91 @@
 # Document 3 — End-to-End Guide: Yuvraj
 
-**Use case owned:** UC-03 — Inspect Compression Statistics (archive header format, archive read/write, reporting)
-**Secondary role:** CI/CD Lead — you own and evolve the GitHub Actions pipeline after Saatwik's Day-0 skeleton
-**Your branch:** `feature/yuvraj-statistics`
+**Use case owned:** UC-03 — Inspect Compression Statistics (archive header serialization/deserialization, ratio calculation, statistics CLI)  
+**Secondary role:** CI/CD & DevOps Lead (GitHub Actions pipeline, SonarCloud integration, release packaging)  
+**Your branch:** `feature/yuvraj-statistics`  
+**Authority:** Aligned with `SE_Mini_Project_Delivereables_Part-1.pdf` and `SE_Mini_Project_Delivereables_Part-2.pdf`.
 
-This is your ground truth for the whole semester — what to build, when, in what order, and on which branch. Read it once fully, then follow it week by week.
+This is your master guide for project execution — what to build, when, in what order, and on which branch.
 
 ---
 
-## 1. Your module, precisely
+## 1. Your Module & DevOps Scope
 
-You own the archive format itself — this makes your work foundational, not just "statistics."
-- The archive header/metadata layout (magic bytes, version, original size, tree/code metadata, bit-count, checksum placeholder, payload) — you and Saatwik agree this together in Sprint 1, then **you own the code that serializes and parses it** (`ArchiveWriter` / `ArchiveReader`).
-- Statistics reporting: original size, compressed size, ratio, estimated savings, timing.
-- The interactive "Statistics" menu screen (prompt for archive path, formatted results table).
-- CI/CD pipeline evolution: build/test/coverage/SonarCloud all wired into GitHub Actions and kept green.
+You own the structural backbone of the archive files and the team's automated build and delivery infrastructure:
+- **Archive Serialization & Parsing (`ArchiveWriter` / `ArchiveReader`):**
+  - Read and write the fixed 18-byte `.jack` header (Magic `0x4A41434B`, Version `0x01`, Flags, Original Size, Compressed Size, Checksum).
+  - Serialize and deserialize the symbol dictionary / frequency table metadata.
+  - Parse and extract total payload bit counts.
+- **Statistics Engine:** Calculate compression ratio, percentage savings, and read archive metadata without needing full decompression.
+- **Statistics CLI Screen:** Interactive menu view and CLI command (`jackfruit stat <file.jack>`) showing formatted statistics tables.
+- **CI/CD Pipeline Architecture:**
+  - Automated GitHub Actions workflow on PRs and commits to `main`.
+  - SonarCloud static analysis configuration for continuous code quality.
+  - Automated release artifact packaging (producing standalone distributable zip).
 
-## 2. Dependencies — who needs what from whom
+---
 
-- Saatwik needs your `ArchiveWriter` to finish his compress vertical slice (his Sprint 3) — this is the single most time-critical dependency in the whole project. If your archive writer slips, three other people's sprints slip.
-- Tanmayi needs your `ArchiveReader` for her decoder (her Sprint 4).
-- Vibhav needs your header/metadata parsing to build structural validation on top of it (his Sprint 5).
-- You need the team's agreed archive format from Sprint 1 before writing any serialization code — don't start coding the format before it's written down and everyone has seen it.
+## 2. Dependencies & Critical Path
 
-## 3. Sprint-by-sprint plan
+- **Critical Path in Sprint 1:** Both Saatwik (`Encoder`) and Tanmayi (`Decoder`) depend on your `ArchiveWriter` and `ArchiveReader` to package and unpackage `.jack` archives. You must deliver these components early in Sprint 1.
+- **CI Pipeline:** The whole team relies on your GitHub Actions workflow to gate PRs with automated builds and GoogleTest runs.
+- **Sprint 1 Team Milestone:** Support the round-trip integration by ensuring archives are formatted strictly per `docs/design/archive-format.md`, enabling the 1-minute working demo video by October 23.
 
-| Sprint (Week) | What you build | Branch/PR | Deliverable & Definition of Done |
-|---|---|---|---|
-| **1** | Co-author the archive binary format with Saatwik (`docs/design/archive-format.md`) — this is joint, not solo. Write your SRS contribution: Section 4.3 for UC-03 description and functional requirements (`JACK-F-009` through `JACK-F-012`). Review Saatwik's CI skeleton from the Setup Guide and plan what you'll add (coverage, SonarCloud) in later sprints. | PR: docs only | Archive format signed off by all 4 members before Sprint 2; UC-03 requirements in SRS v0.1. |
-| **2** | **`ArchiveWriter`/`ArchiveReader`**: serialize/parse the header and metadata, with round-trip unit tests (serialize then parse gives back the same values) and negative tests (invalid magic, unsupported version, impossible field values — these will matter a lot more to Vibhav later, but write the basic ones now). | `feature/yuvraj-statistics` → PR #1 | Archive header serializes/parses correctly in isolation, before any real Huffman data exists. **This is your critical-path deliverable — treat this sprint as non-negotiable.** |
-| **3** | Support Saatwik integrating `ArchiveWriter` into his compress command (pair with him if needed). Start adding GitHub Actions coverage reporting (with Tanmayi) to the pipeline. | PR #2 (fixes/support) | Saatwik's compress milestone lands using your writer without major rework. |
-| **4** | Support Tanmayi integrating `ArchiveReader` into her decoder. Begin the Statistics use case itself: read a valid archive and compute original size, compressed size, ratio. | PR #3 | Statistics can be computed from any real archive Saatwik/Tanmayi produce. |
-| **5** | Finish the interactive "Statistics" CLI screen with a clean formatted output table. Write 10 manual test cases for UC-03 (valid archive, empty file, high redundancy, low redundancy, ratio calculation, size consistency, invalid archive, missing file, boundary sizes, output formatting). Expand GitHub Actions to run SonarCloud analysis on every PR. | PR into `docs/validation/` + `.github/workflows/` | Statistics screen demo-ready; SonarCloud dashboard live and linked in README. |
-| **6** | Quality hardening: as CI/CD lead, make sure build+test+coverage+SonarCloud all run reliably on every PR, not just on `main`. Fix your own SonarCloud findings. Help package a release build (zip artifact per the course's "Docker optional, zip file ok" note) as a CI step. | Pipeline PRs | CI pipeline produces a downloadable release zip as an artifact on merge to `main`. |
-| **7** | Support performance baseline measurement (Saatwik) by adding a simple timing harness if useful. Finalize the release packaging step. | PR: pipeline polish | One-command reproducible build + test + package works for a new clone of the repo. |
-| **8** | Execute your 10 manual UC-03 test cases (fill Actual Result + Pass/Fail). Compile CI/CD and SonarCloud evidence (screenshots/links) for the final report. Update RTM for your requirements. Rehearse the "DevOps/CI-CD" part of the demo. | Final PR + report doc | All JACK-F-009..012 requirements traced to code, tests, and manual results; CI/CD evidence section ready. |
+---
 
-## 4. What you personally must write in the shared documents
+## 3. Official Timeline & Deliverables Plan
 
-- **SRS:** Section 4.3 (UC-03 description and functional requirements `JACK-F-009` through `JACK-F-012`), plus co-authoring the archive format specification.
-- **Design doc (SAD):** Class diagram for statistics reporting, API design for `ArchiveWriter`/`ArchiveReader` (Section 4.3), plus the archive-format field table.
-- **Validation doc:** Your 10 UC-03 test cases.
-- **CI/CD evidence:** Pipeline history, SonarCloud report links/screenshots — this is the "evidence" a grader looks for that CI/CD is real, not decorative.
+### Phase 1: Engineering Documents (Part-1 — Completed Baseline)
+- [x] Co-author binary archive specification (`docs/design/archive-format.md` & `.pdf`).
+- [x] Contribute UC-03 requirements (`JACK-F-009..012`) to IEEE SRS (`docs/srs/srs-v0.1.pdf`).
+- [x] Review C++ API design for `ArchiveWriter` and `ArchiveReader` in IEEE SAD (`docs/design/architecture-v0.1.pdf`).
+- [x] Verify baseline GitHub Actions CI workflow runs CTest cleanly.
 
-## 5. PR checklist (use for every PR you open)
+---
 
-- [ ] Branched from latest `main`
-- [ ] Unit tests added for new logic
-- [ ] Builds clean, `ctest` passes locally
-- [ ] PR description references the GitHub issue number
-- [ ] At least one teammate reviewed and approved
-- [ ] CI green before merge
-- [ ] SRS/design doc updated if this PR changes a requirement or interface
+### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
+- [ ] In the linked GitHub Project board, verify your assigned backlog items:
+  - Archive Serialization & Parsing (`ArchiveWriter`/`ArchiveReader`) — **5 SP**
+  - `JACK-F-009` (Archive metadata header inspection) — **2 SP**
+  - `JACK-F-010` (Compression ratio & space savings calculation) — **2 SP**
+  - `JACK-F-011` (Interactive statistics display table) — **3 SP**
+  - `JACK-F-012` (Command-line `--stat` execution) — **2 SP**
+- [ ] Participate in dry-run practice week (12th–16th Oct) testing CI PR gates.
+- [ ] Confirm backlog lock on 19th Oct.
 
-## 6. Pitfalls specific to your role
+---
 
-- Don't be the bottleneck — Saatwik and Tanmayi are both waiting on your Sprint 2 deliverable. If you're stuck, say so in the daily check-in immediately, not at the end of the week.
-- Don't gold-plate the archive format before it's agreed — get the minimum viable set of fields signed off in Sprint 1, refine later only with a documented format-version bump.
-- As CI/CD lead, don't let the pipeline become something only you understand — document the workflow file with comments so any teammate can read what each CI step does.
-- Don't treat "statistics" as a trivial module just because it sounds simple — the archive parsing underneath it is genuinely load-bearing infrastructure for the whole team.
+### Phase 2: Sprint 1 — Core Working Product (19th Oct – 23rd Oct 2026)
+**Goal:** Deliver `ArchiveWriter` and `ArchiveReader`, ensure CI runs green on all teammate PRs, and support the 1-minute working demo video.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (19–20 Oct)** | Implement `ArchiveWriter` (18-byte header + metadata serialization) | `include/archive/archive_writer.hpp`, `src/archive/archive_writer.cpp` |
+| **Day 2–3 (20–21 Oct)** | Implement `ArchiveReader` (header validation + metadata deserialization) | `include/archive/archive_reader.hpp`, `src/archive/archive_reader.cpp` |
+| **Day 3 (21 Oct)** | Unit tests for archive round-trip serialization and error handling on invalid magic bytes | `tests/unit/test_archive_io.cpp` |
+| **Day 4 (22 Oct)** | Ensure GitHub Actions CI triggers and reports build/test status on all teammate PRs | `.github/workflows/ci.yml` |
+| **Day 4 (22 Oct)** | Raise PR from `feature/yuvraj-statistics` | PR reviewed and merged into `main` |
+| **Day 5 (23 Oct)** | **Support Sprint 1 Demo Video:** Validate archive headers in the working round-trip demo (1-minute video uploaded to repo) | Video demo ready |
+
+---
+
+### Phase 2: Sprint 2 — Full Feature Product & Development Freeze (26th Oct – 30th Oct 2026)
+**Goal:** Implement Statistics Engine and CLI command, wire SonarCloud and release packaging into CI, assist 2-minute demo video, and freeze development.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (26–27 Oct)** | Implement `StatisticsEngine` and ratio calculation logic | `include/stats/statistics_engine.hpp`, `src/stats/statistics_engine.cpp` |
+| **Day 2–3 (27–28 Oct)** | Build interactive Statistics CLI screen and `jackfruit stat` command | `src/cli/stat_view.cpp` |
+| **Day 3 (28 Oct)** | Configure SonarCloud analysis workflow in GitHub Actions | `.github/workflows/sonarcloud.yml` |
+| **Day 4 (29 Oct)** | Add automated release packaging step to CI (generate distributable zip artifact) | Automated workflow artifact |
+| **Day 4 (29 Oct)** | Unit tests for statistics calculations (`TC-STAT-01`) | `tests/unit/test_statistics.cpp` |
+| **Day 5 (30 Oct)** | **Support Sprint 2 Demo Video:** Showcase `jackfruit stat` formatting in 2-minute video | Demo video completed |
+| **Day 5 (30 Oct)** | **Development Freeze:** Lock CI pipeline, verify all checks green, freeze development | Ready for final evaluation |
+
+---
+
+## 4. CI/CD Lead Best Practices
+
+1. **Keep CI Gating Strict:** Ensure every PR requires passing CTest runs before merging.
+2. **Big-Endian Contract:** Double-check that multi-byte integers in headers are packed using Big-Endian order as agreed in the specification.
+3. **No Breaking Changes:** Never alter header field sizes or positions without alerting the entire team.

@@ -1,181 +1,163 @@
 # Document 5 — Master Project Checklist
 
-**Project:** Jackfruit Mini-Project — Basic ZIP-style File Compression Tool (Huffman Coding), interactive CLI
-**Team:** Saatwik (lead), Tanmayi, Yuvraj, Vibhav
-**Course:** UE24CS341A — Software Engineering
+**Project:** Jackfruit — C++17 Huffman File Compression Tool with Interactive CLI  
+**Team:** Saatwik (Lead / Architecture / UC-01), Tanmayi (Testing / UC-02), Yuvraj (CI/CD / UC-03), Vibhav (Security / UC-04)  
+**Course:** UE24CS341A — Software Engineering  
+**Authority:** Aligned with `SE_Mini_Project_Delivereables_Part-1.pdf` and `SE_Mini_Project_Delivereables_Part-2.pdf`.
 
-This is the single source of truth for where the whole team stands at any point. It doesn't replace the 5 other documents — it's the checkpoint view across all of them. Whoever is unsure "are we on track" reads this file first. Update it at the end of every sprint review.
+This is the single source of truth for where the whole team stands at any point. Update it at each milestone and sprint review.
 
 ---
 
-## 0. How the 6 documents fit together
+## 0. Document Suite Structure
 
 | Doc | For | Purpose |
 |---|---|---|
-| `00-SETUP-GUIDE-Saatwik.md` | Saatwik only | Day-0 repo/CI/board bootstrap — do this before Sprint 1 |
-| `01-MEMBER-GUIDE-Saatwik.md` | Saatwik | His sprint-by-sprint contributor work (UC-01 Compress) |
-| `02-MEMBER-GUIDE-Tanmayi.md` | Tanmayi | Her sprint-by-sprint contributor work (UC-02 Decompress) |
-| `03-MEMBER-GUIDE-Yuvraj.md` | Yuvraj | His sprint-by-sprint contributor work (UC-03 Statistics) |
-| `04-MEMBER-GUIDE-Vibhav.md` | Vibhav | His sprint-by-sprint contributor work (UC-04 Validate) |
-| `05-MASTER-PROJECT-CHECKLIST.md` | Everyone | This file — cross-team checkpoints and grading-stakes tracker |
+| `00-SETUP-GUIDE-Saatwik.md` | Saatwik only | Day-0 repo, CMake, GTest, CI skeleton, branch setup |
+| `01-MEMBER-GUIDE-Saatwik.md` | Saatwik | Lead responsibilities, UC-01 Compress, integration, demo |
+| `02-MEMBER-GUIDE-Tanmayi.md` | Tanmayi | Testing lead, UC-02 Decompress, GTest, coverage (gcov/lcov) |
+| `03-MEMBER-GUIDE-Yuvraj.md` | Yuvraj | CI/CD lead, Archive format parsing/writing, UC-03 Statistics, SonarCloud |
+| `04-MEMBER-GUIDE-Vibhav.md` | Vibhav | Security lead, UC-04 Integrity/CRC-32, ASan/UBSan, malformed input testing |
+| `05-MASTER-PROJECT-CHECKLIST.md` | Whole Team | This file — Phase milestones, Sprint checklists, deliverable tracking |
 
-## 1. Marks weightage — know what's actually at stake
+---
 
-| Stage | Deliverable | Marks |
-|---|---|---|
-| Requirements | SW Requirements Specification | 12 |
-| Requirements | Validation Spec | 8 |
-| Design | High-level Architecture document | 7 |
-| Design | SW Design (UML, in Arch doc) | 7 |
-| Design | Validation Spec update | 6 |
-| Implementation | Iterative design & implementation | 15 |
-| Implementation | Unit test coverage | 5 |
-| Implementation | Validation Spec update | 5 |
-| System Validation | Validation report + maintenance plan | 15 |
-| Final Demo | Working demo + 15-min presentation | 20 |
-| **Total** | | **100** |
+## 1. Official Course Evaluation Model & Milestones
 
-Implementation + testing together are worth 30, but Requirements + Design together are also worth 33 — don't treat the paperwork phases as filler before "the real work." They're graded almost as heavily as the code.
+The project is governed by a 2-Part evaluation structure:
 
-## 2. Team ownership at a glance
-
-| Member | Use case | Branch | Secondary role |
+| Phase | Milestone / Deliverable | Deadline / Window | Core Requirements & Artifacts |
 |---|---|---|---|
-| Saatwik | UC-01 Compress | `feature/saatwik-compression` | Lead, architecture, integrator |
-| Tanmayi | UC-02 Decompress | `feature/tanmayi-decompression` | Testing & coverage lead |
-| Yuvraj | UC-03 Statistics | `feature/yuvraj-statistics` | CI/CD lead |
-| Vibhav | UC-04 Validate | `feature/vibhav-integrity` | Security & SonarCloud lead |
+| **Part-1** | **Engineering Design Documents** | **28th Sept 2026** (Baseline) | • IEEE SRS (`docs/srs/srs-v0.1.pdf`)<br>• IEEE SAD / Architecture (`docs/design/architecture-v0.1.pdf`)<br>• IEEE Test Plan with 7–10 concrete test cases (`docs/validation/test-plan-v0.1.pdf`) |
+| **Part-2 (Setup)** | **GitHub Backlog & Story Points** | **12th Oct 2026** | • GitHub Project board linked to repo<br>• SRS FRs/NFRs converted to GitHub issues<br>• Story Points (Fibonacci) assigned to all issues<br>• Issues assigned to team members<br>• 12–16 Oct: Dry-run practice week; 19 Oct: Backlog lock |
+| **Part-2 (Sprint 1)** | **Core Working Product** | **19th Oct – 23rd Oct 2026** | • Working core product (Compress + Decompress round-trip)<br>• Automated CI on PRs/commits via GitHub Actions<br>• Peer-reviewed PRs merged into `main`<br>• **1-minute video demo of working product** uploaded to repo |
+| **Part-2 (Sprint 2)** | **Full Product & Hardening** | **26th Oct – 30th Oct 2026** | • Complete feature set (Statistics, Integrity check, interactive CLI)<br>• 80% test coverage, SonarCloud analysis, ASan/UBSan clean<br>• **2-minute video demo of complete product** uploaded to repo<br>• Documentation finalized & **Development Freeze (30th Oct)** |
 
-Rule for all branches: no direct pushes to `main`; PR + 1 review + green CI required to merge.
+---
 
-## 3. Sprint-by-sprint master checkpoint
+## 2. Team Ownership & Feature Allocation
 
-Mark each row done only when **all** listed items are true — a sprint isn't "done" if one person's part is still open.
+| Member | Use Case Owned | GitHub Feature Branch | Secondary Lead Role | Key Modules Owned |
+|---|---|---|---|---|
+| **Saatwik** | **UC-01: Compress File** | `feature/saatwik-compression` | Project Lead, Architecture, Integrator | `FrequencyTable`, `HuffmanTree`, `BitWriter`, `Encoder`, CLI framework |
+| **Tanmayi** | **UC-02: Decompress File** | `feature/tanmayi-decompression` | Testing & Coverage Lead | `BitReader`, `Decoder`, byte reconstruction, GoogleTest suite, coverage |
+| **Yuvraj** | **UC-03: Inspect Statistics** | `feature/yuvraj-statistics` | CI/CD & DevOps Lead | `ArchiveWriter`, `ArchiveReader`, `StatisticsEngine`, GitHub Actions, SonarCloud |
+| **Vibhav** | **UC-04: Validate Integrity** | `feature/vibhav-integrity` | Security & Robustness Lead | `CRC32`, structural integrity validator, ASan/UBSan sanitizers, fuzz testing |
 
-### Sprint 1 — Foundations
-- [ ] Repo created, protected `main`, all 4 branches created (Saatwik)
-- [ ] CI skeleton green on `main` (Saatwik)
-- [ ] GitHub Project board created with Sprint 1–2 issues (Saatwik)
-- [ ] Archive binary format agreed and documented in `docs/design/archive-format.md` (Saatwik + Yuvraj, reviewed by Tanmayi + Vibhav)
-- [ ] SRS v0.1 mapped to `SRS_Template for SE.docx`: 16 FRs (`JACK-F-001..016`), 5 NFRs (`JACK-NF-001..005`), 5 Security Reqs (`JACK-SR-001..005`), 2 UML Use-Case diagrams, and RTM table
-- [ ] SAD v0.1 mapped to `SAD_Template.docx`: Layered architecture, Component UML, STRIDE threat model, 2 UML Sequence diagrams, and C++ API interfaces (Saatwik)
-- [ ] Testing conventions & initial Software Test Plan (STP) mapped to `Test_Plan_Template for SE.docx` (Tanmayi)
+**Universal Rules:**
+1. No direct commits to `main`.
+2. Every change must go through a feature branch (`feature/<name>-<module>`), require a Pull Request, pass GitHub Actions CI, and receive at least 1 peer approval before merge.
 
-### Sprint 2 — Core algorithm & foundations
-- [ ] Frequency table, Huffman tree, code generation, `BitWriter` — unit tested (Saatwik)
-- [ ] `ArchiveWriter`/`ArchiveReader` serialize/parse — unit tested (Yuvraj) **← critical path, blocks 2 people**
-- [ ] `BitReader` against hand-built bitstreams — unit tested (Tanmayi)
-- [ ] Coverage reporting (gcov/lcov) wired into CI (Tanmayi + Yuvraj)
-- [ ] Checksum/CRC module — unit tested (Vibhav)
+---
 
-### Sprint 3 — Compression vertical slice
-- [ ] Encoder + `ArchiveWriter` integrated, interactive Compress screen working (Saatwik, supported by Yuvraj)
-- [ ] `compress input.txt output.hzip` works end-to-end from the CLI menu
-- [ ] GitHub Actions coverage step added (Yuvraj + Tanmayi)
+## 3. Phase & Sprint Execution Checklists
 
-### Sprint 4 — Decompression vertical slice
-- [ ] Decoder + `ArchiveReader` integrated, interactive Decompress screen working (Tanmayi, supported by Yuvraj)
-- [ ] **Compress → decompress round trip byte-identical** on text/binary/empty/large files — team milestone
-- [ ] Statistics computation started against real archives (Yuvraj)
+### Phase 1: Documentation Deliverables (Part-1 — ETA: 28th Sept 2026)
+- [x] **Repository Skeleton & Build System:** C++17 CMake configuration, GoogleTest integration, GitHub Actions CI workflow (Saatwik)
+- [x] **Binary Archive Specification:** `.jack` format specified, MSB-first packing agreed and signed off (`docs/design/archive-format.md`, `archive-format.pdf`)
+- [x] **Software Requirements Specification (SRS):** IEEE format, 16 FRs (`JACK-F-001..016`), 5 NFRs (`JACK-NF-001..005`), 5 Security Reqs (`JACK-SR-001..005`), 2 UML Use-Case diagrams, RTM (`docs/srs/srs-v0.1.pdf`) (Saatwik leads, team contributed)
+- [x] **Software Architecture & Design (SAD):** IEEE format, Layered architecture, Component diagram, STRIDE threat model, 2 UML Sequence diagrams, C++ API contracts (`docs/design/architecture-v0.1.pdf`) (Saatwik)
+- [x] **Testing Conventions:** GoogleTest naming and directory hierarchy (`docs/design/testing-conventions.md`) (Tanmayi)
+- [ ] **Software Test Plan (STP):** IEEE 829 format, 10 baseline test cases (`TC-COMP-01..03`, `TC-DECOMP-01..03`, `TC-STAT-01`, `TC-VALID-01`, `TC-PERF-01`, `TC-SEC-01`), 2-sprint schedule, compiled to `docs/validation/test-plan-v0.1.pdf` (Tanmayi — in progress via feedback guide)
 
-### Sprint 5 — Statistics + integrity, test cases written
-- [ ] Interactive Statistics screen finished (Yuvraj)
-- [ ] Checksum + structural validation integrated, interactive Validate screen working (Vibhav)
-- [ ] SonarCloud wired into CI (Yuvraj)
-- [ ] 10 manual test cases written per use case, all 4 owners (40 total, not yet executed)
-- [ ] Integration/system test folders scaffolded (Tanmayi)
+---
 
-### Sprint 6 — Quality hardening
-- [ ] Coverage target met or gap documented (Tanmayi)
-- [ ] SonarCloud critical issues resolved, per module owner
-- [ ] Sanitizers (ASan/UBSan) run against full pipeline
-- [ ] Security review doc started (Vibhav)
-- [ ] Release-zip packaging step added to CI (Yuvraj)
+### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
+- [ ] **GitHub Project Linked:** Project board created and linked to `Software-Engineering-Jackfruit` repository.
+- [ ] **Issue Creation from SRS:** All functional requirements (`JACK-F-001` through `016`), NFRs (`JACK-NF-001..005`), and Security requirements (`JACK-SR-001..005`) entered as GitHub issues with acceptance criteria.
+- [ ] **Story Point Field Created:** Custom field **Story Points** enabled in GitHub Projects using Fibonacci sequence (1, 2, 3, 5, 8).
+- [ ] **Story Points Assigned:**
+  - Saatwik (UC-01): `JACK-F-001` (3 SP), `JACK-F-002` (5 SP), `JACK-F-003` (5 SP), `JACK-F-004` (3 SP).
+  - Tanmayi (UC-02): `JACK-F-005` (3 SP), `JACK-F-006` (5 SP), `JACK-F-007` (3 SP), `JACK-F-008` (5 SP).
+  - Yuvraj (UC-03 / Archive): Archive Serialization/Deserialization (5 SP), `JACK-F-009` (2 SP), `JACK-F-010` (2 SP), `JACK-F-011` (3 SP), `JACK-F-012` (2 SP).
+  - Vibhav (UC-04 / Security): CRC32 Engine (3 SP), `JACK-F-013` (2 SP), `JACK-F-014` (3 SP), `JACK-F-015` (2 SP), `JACK-F-016` (3 SP).
+- [ ] **Sprint Allocation:** Stories mapped into Sprint-1 (19–23 Oct) and Sprint-2 (26–30 Oct) milestone views.
+- [ ] **Dry-Run Week (12th – 16th Oct):** Team tests PR creation, review flow, and branch merges.
+- [ ] **Backlog Final Lock (19th Oct):** Final review and grooming of backlog before Sprint 1 kickoff.
 
-### Sprint 7 — Security, performance, release
-- [ ] Performance baseline measured and recorded, not guessed (Saatwik)
-- [ ] Fuzz/malformed-input batch run against full pipeline, no crashes (Vibhav + Tanmayi)
-- [ ] Release packaging finalized, reproducible from a clean clone (Yuvraj)
-- [ ] Security review doc finalized (Vibhav)
+---
 
-### Sprint 8 — System validation & finalization
-- [ ] All 40 manual test cases executed, Actual Result + Pass/Fail filled (all 4 owners, for their own use case)
-- [ ] Requirement Traceability Matrix complete end-to-end (all requirements → design → code → tests)
-- [ ] Maintenance plan drafted (Saatwik, reviewed by all)
-- [ ] Final report assembled (Saatwik leads, sections from all 4)
-- [ ] Demo rehearsed — everyone can explain their own module **and** at least one neighboring module
+### Phase 2: Sprint 1 — Core Working Product (19th Oct – 23rd Oct 2026)
+**Sprint Goal:** Produce a working end-to-end product (compress a file, decompress it, prove 100% byte-identical restoration) with automated CI and record a 1-minute video demo.
 
-## 4. Final report assembly checklist (Section order)
+#### Saatwik Tasks (UC-01 & Architecture):
+- [ ] Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) and unit tests.
+- [ ] Implement `HuffmanTree` builder & canonical code generator (`src/compression/huffman_tree.cpp`).
+- [ ] Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract.
+- [ ] Implement `Encoder` module (`src/compression/encoder.cpp`).
+- [ ] Raise PR from `feature/saatwik-compression` with automated unit tests.
 
-- [ ] Cover page
-- [ ] Table of contents
-- [ ] Proposal / Synopsis
-- [ ] Software Requirements Specification
-- [ ] Agile Project Plan
-- [ ] Architecture and Design Diagrams
-- [ ] Implementation overview and module ownership
-- [ ] Test Plan and Test Cases (all 40)
-- [ ] Coverage, CI/CD, SonarCloud and security evidence
-- [ ] Bug/defect summary
-- [ ] System Validation Report
-- [ ] Maintenance Plan
-- [ ] Screenshots / demo evidence
-- [ ] Requirement Traceability Matrix
-- [ ] Individual contribution summary
-- [ ] References / glossary / appendices
+#### Tanmayi Tasks (UC-02 & Testing):
+- [ ] Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding.
+- [ ] Implement `Decoder` module (`src/decompression/decoder.cpp`) for Huffman tree decoding.
+- [ ] Scaffold unit tests in `tests/unit/test_bit_reader.cpp` and `test_decoder.cpp`.
+- [ ] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
+- [ ] Raise PR from `feature/tanmayi-decompression`.
 
-## 5. 15-minute demo timing plan
+#### Yuvraj Tasks (Archive IO & CI/CD):
+- [ ] Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization.
+- [ ] Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization.
+- [ ] Ensure GitHub Actions CI automates build and CTest execution on every PR.
+- [ ] Raise PR from `feature/yuvraj-statistics`.
 
-| Time | Content | Lead speaker |
-|---|---|---|
-| 0:00–1:00 | Problem, motivation, scope | Saatwik |
-| 1:00–3:00 | Use cases + architecture | Saatwik |
-| 3:00–7:00 | Live demo: compress → statistics → validate → decompress | One member per screen |
-| 7:00–9:00 | Huffman algorithm + archive format + key decisions | Saatwik + Yuvraj |
-| 9:00–11:00 | Testing, coverage, bugs, security validation | Tanmayi + Vibhav |
-| 11:00–13:00 | GitHub board, PRs, GitHub Actions, SonarCloud | Yuvraj |
-| 13:00–14:00 | Differentiation, novelty, limitations | Whole team |
-| 14:00–15:00 | Contribution summary + SDLC artefacts + conclusion | Saatwik |
+#### Vibhav Tasks (Security Core):
+- [ ] Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
+- [ ] Add unit tests verifying known CRC-32 test vectors (`tests/unit/test_crc32.cpp`).
+- [ ] Raise PR from `feature/vibhav-integrity`.
 
-## 6. Evidence checklist a grader will look for
+#### Sprint 1 Milestone Deliverables:
+- [ ] All 4 Sprint 1 PRs reviewed and merged into `main`.
+- [ ] CLI command `jackfruit compress input.txt -o out.jack` and `jackfruit decompress out.jack -o restored.txt` working end-to-end.
+- [ ] `diff input.txt restored.txt` returns zero differences.
+- [ ] **Record 1-Minute Video Demo:** Demonstrate build, CLI compression, CLI decompression, and `cmp` verification. Upload video to `docs/media/sprint-1-demo.mp4` (or linked per course guidelines).
 
-- [ ] GitHub Project board with backlog/sprint history (shows real Agile process)
-- [ ] Issues with clear acceptance criteria
-- [ ] Git commit graph showing balanced individual contribution
-- [ ] Branches + PRs + review comments (shows real collaboration, not one person's code)
-- [ ] GitHub Actions run history
-- [ ] GoogleTest results + coverage report
-- [ ] SonarCloud report
-- [ ] Sanitizer/security evidence
-- [ ] UML diagrams (use case, architecture, class, sequence)
-- [ ] Requirement Traceability Matrix
-- [ ] Manual test sheet with genuine Actual Result / Pass-Fail entries
-- [ ] Bug tickets with regression tests
-- [ ] Working interactive tool + sample files at demo time
+---
 
-## 7. Critical mistakes to avoid (team-wide)
+### Phase 2: Sprint 2 — Full Feature Product & Development Freeze (26th Oct – 30th Oct 2026)
+**Sprint Goal:** Complete all 4 use cases, interactive CLI menu, coverage enforcement (≥80%), SonarCloud analysis, security hardening, final 2-minute video demo, and freeze development.
 
-- Don't build features first and create board issues afterwards — issues come before code.
-- Don't let one person dominate the commit graph.
-- Don't count UI, testing, or documentation alone as anyone's "full functionality" — each person's UI screen sits on top of their real backend module.
-- Don't merge a PR without review and a green CI check.
-- Don't write only happy-path tests.
-- Don't claim full ZIP/DEFLATE compatibility — this is a Huffman-based custom archive tool.
-- Don't leave the Requirement Traceability Matrix until the final week.
-- Don't fabricate manual test results — fill Actual Result only after running the test.
-- Don't accept LLM-generated code without understanding it well enough to explain it live — the course explicitly grades this.
-- Don't change the archive binary format informally once others are building against it.
+#### Saatwik Tasks (CLI & Performance):
+- [ ] Build interactive CLI terminal navigation menu (`src/cli/menu.cpp`).
+- [ ] Measure and record performance benchmark against 5MB dataset (`JACK-NF-001`).
+- [ ] Integrate all 4 module flows into unified `jackfruit` executable.
+- [ ] Final architecture and RTM reconciliation.
 
-## 8. Definition of project success
+#### Tanmayi Tasks (Coverage & Test Execution):
+- [ ] Wire `gcov`/`lcov` coverage reporting into GitHub Actions CI pipeline.
+- [ ] Expand integration and system test suites (`tests/integration/`, `tests/system/`).
+- [ ] Ensure codebase achieves **≥ 80% line coverage** and **≥ 70% branch coverage**.
+- [ ] Execute 10 manual test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) and document actual results.
 
-- All four use cases work end-to-end from the interactive CLI.
-- A compressed file decompresses to byte-identical content.
-- Invalid/corrupt inputs fail safely, never crash.
-- All 40 manual test cases executed and documented.
-- Automated unit/integration/system tests pass in CI.
-- Line and branch coverage reported.
-- GitHub Actions CI/CD demonstrably working end-to-end.
-- SonarCloud and security evidence available.
-- Every requirement traces to architecture → design → code → tests.
-- Every member has meaningful, visible commits and can explain their module and a neighbor's.
-- Final report contains every required SDLC artefact.
+#### Yuvraj Tasks (UC-03 Statistics & Packaging):
+- [ ] Implement `StatisticsEngine` (`src/stats/statistics_engine.cpp`) for original size, compressed size, and ratio calculations.
+- [ ] Wire `jackfruit stat <archive.jack>` command and display screen.
+- [ ] Configure SonarCloud analysis workflow in GitHub Actions.
+- [ ] Create automated release packaging step in CI (distributable zip artifact).
+
+#### Vibhav Tasks (UC-04 Integrity & Security Hardening):
+- [ ] Implement `IntegrityValidator` (`src/security/integrity_validator.cpp`) for header checks and payload CRC-32 verification.
+- [ ] Wire `jackfruit validate <archive.jack>` command (returns exit code 0 on valid, 3 on corruption).
+- [ ] Set up AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in CI pipeline.
+- [ ] Execute malformed archive fuzz test suite and document findings in `docs/validation/security-review.md`.
+
+#### Sprint 2 Milestone Deliverables:
+- [ ] All 4 use cases functioning seamlessly from the interactive CLI menu.
+- [ ] SonarCloud quality gate passing with zero critical vulnerabilities.
+- [ ] CI pipeline completely green with automated test coverage report.
+- [ ] **Record 2-Minute Video Demo:** Comprehensive walk-through of Compression, Statistics, Integrity Validation, and Decompression with error handling. Upload video to `docs/media/sprint-2-demo.mp4`.
+- [ ] Document any deviations from SRS/SAD in `docs/deviations.md`.
+- [ ] **Development Freeze (30th Oct 2026):** Codebase locked, ready for final presentation and evaluation.
+
+---
+
+## 4. Final Deliverable & Presentation Readiness
+
+- [ ] **GitHub Repository Evidence:** Balanced commit graph across all 4 contributors, merged PRs with review threads, green CI runs.
+- [ ] **Documentation Suite:**
+  - `docs/srs/srs-v0.1.pdf` (SRS)
+  - `docs/design/architecture-v0.1.pdf` (SAD)
+  - `docs/validation/test-plan-v0.1.pdf` (Test Plan)
+  - `docs/validation/test-results.md` (Executed test records)
+  - `docs/validation/security-review.md` (Security & sanitizer findings)
+- [ ] **Video Demos:** Sprint 1 (1 min) and Sprint 2 (2 min) videos present and accessible in the repository.
+- [ ] **Demo Preparation:** All 4 members prepared to explain their primary module, secondary lead area, and neighbor integration live.

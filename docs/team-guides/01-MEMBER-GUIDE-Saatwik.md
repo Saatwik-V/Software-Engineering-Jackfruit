@@ -1,64 +1,93 @@
 # Document 1 — End-to-End Guide: Saatwik
 
-**Use case owned:** UC-01 — Compress File (frequency table → Huffman tree → encoder → archive write)
-**Secondary role:** Overall lead, architecture owner, main-branch integrator, code-review lead
-**Your branch:** `feature/saatwik-compression`
-**Do first:** `00-SETUP-GUIDE-Saatwik.md` (repo/CI/board must exist before Sprint 1 starts)
+**Use case owned:** UC-01 — Compress File (frequency table → Huffman tree → encoder → archive write)  
+**Secondary role:** Overall Lead, Architecture Owner, Main-Branch Integrator, Code-Review Lead  
+**Your branch:** `feature/saatwik-compression`  
+**Authority:** Aligned with `SE_Mini_Project_Delivereables_Part-1.pdf` and `SE_Mini_Project_Delivereables_Part-2.pdf`.
 
-This is your ground truth for the whole semester — what to build, when, in what order, and on which branch. Read this once fully, then use it week by week.
+This is your master guide for project execution — what to build, when, in what order, and on which branch.
 
 ---
 
-## 1. Your module, precisely
+## 1. Your Module & Architectural Scope
 
-You own everything needed to turn a raw input file into a valid archive:
-- Frequency table construction from input bytes.
-- Huffman tree construction and Huffman code generation.
-- Encoder (bytes → Huffman bitstream), using the shared `BitWriter` (you build this shared utility since compression needs it first; decompression will reuse your `BitWriter`'s mirror, `BitReader`, which Tanmayi owns).
-- The interactive "Compress" menu screen in the CLI (prompts for input/output paths, shows progress, reports original vs. compressed size on success).
+You own everything needed to analyze and transform raw input bytes into an optimal compressed bitstream:
+- **Frequency Table Construction:** Count 8-bit symbol occurrences (`0x00`–`0xFF`) across the input stream.
+- **Huffman Tree Builder & Code Generator:** Build min-heap priority queue, construct optimal binary prefix tree, and generate variable-length bitcodes.
+- **BitWriter Utility:** Bit-level accumulator packing bits MSB-first into bytes, byte-boundary padding, and file flushing (shared utility; Tanmayi mirrors this with `BitReader`).
+- **Core Encoder:** Map file bytes to variable-length bit sequences.
+- **CLI Framework & Compress Screen:** Interactive prompt for input/output paths, progress indication, and compression ratio reporting.
+- **Project Leadership & Integration:** Review all teammate PRs, enforce branch protection, oversee GitHub Backlog with Story Points, and coordinate the 1-minute (Sprint 1) and 2-minute (Sprint 2) video demos.
 
-You do **not** own the archive header/metadata format or its serialization — that's Yuvraj's (Archive layer). You call into his `ArchiveWriter` once your encoded bitstream is ready. Agree the exact header fields together in Sprint 1 before either of you builds against it (see below).
+---
 
-## 2. Dependencies — who needs what from whom
+## 2. Dependencies & Critical Path
 
-- You depend on: nothing to *start*. Your Huffman core (Sprint 2) is pure algorithm, no other module needed.
-- You depend on Yuvraj's `ArchiveWriter` to finish the **end-to-end** compress command (Sprint 3).
-- Tanmayi depends on your `BitWriter`'s bit-ordering convention to build `BitReader` correctly — write this convention down in the design doc the moment you decide it (Sprint 1–2), don't leave it implicit in code.
-- Everyone depends on you (as architecture owner) to keep `src/compression/` and `include/` interfaces stable once others start building against them — don't change a public interface without flagging it to the team first.
+- **Independent Start:** Your core Huffman algorithm (`FrequencyTable`, `HuffmanTree`, `BitWriter`) has zero external dependencies and can be built immediately.
+- **Collaboration with Yuvraj:** You call into Yuvraj's `ArchiveWriter` (`src/archive/archive_writer.cpp`) to prepend the 18-byte header and serialized tree metadata before writing the compressed bitstream.
+- **Handshake with Tanmayi:** Tanmayi's `BitReader` must mirror your `BitWriter`'s MSB-first bit packing convention (formally documented in `docs/design/archive-format.md`).
+- **Sprint 1 Team Milestone:** Your encoder + Yuvraj's archive writer + Tanmayi's decoder must achieve a working round-trip compression/decompression by October 23 for the Sprint 1 demo video.
 
-## 3. Sprint-by-sprint plan
+---
 
-| Sprint (Week) | What you build | Branch/PR | Deliverable & Definition of Done |
-|---|---|---|---|
-| **1** | Draft system architecture (layers diagram), 2 use-case diagrams, STRIDE threat model, and — jointly with the whole team — the archive binary format (magic bytes, version, original size, tree metadata, bit-count, checksum, payload). Write SRS v0.1 skeleton (you own Sections 1–2: Introduction, Overall Description, plus Section 4.1 for UC-01, 5 NFRs, and initial RTM). CMake/CI already done in Setup Guide. | Small PR: `docs/design/architecture-v0.1.md`, `docs/design/archive-format.md`, `docs/srs/srs-v0.1.md` | Format is written down and agreed by all 4 before Sprint 2 starts; SRS and SAD match course templates. |
-| **2** | Frequency table + Huffman tree construction + code generation. `BitWriter` (bit-level packing, byte-boundary handling, flush). Unit tests for all of it (empty input, single symbol, all 256 byte values, repeated bytes). | `feature/saatwik-compression` → PR #1 | Huffman core passes unit tests **independently of any file I/O or archive format**. Reviewed by Tanmayi (she needs your `BitWriter` contract). |
-| **3** | Encoder (bytes → bitstream using your codes), integrate with Yuvraj's `ArchiveWriter`, wire up the interactive "Compress" CLI screen (prompt → progress → result). | PR #2 | First real end-to-end: `compress input.txt output.hzip` works from the interactive menu and produces a real archive. This is the Sprint-3 team milestone — don't slip it, Tanmayi's Sprint 4 needs a real archive to decompress. |
-| **4** | Support Tanmayi's round-trip testing (compress → decompress → byte-identical). Fix any encoder bugs surfaced. Start writing your part of the Design doc: class diagram + sequence diagram for UC-01. | PR #3 (fixes) | Round-trip test passes on varied files (text, binary, empty, large). |
-| **5** | Write 10 manual test cases for UC-01 (per the course template: Test Case ID, Module, Description, Preconditions, Steps, Test Data, Expected/Actual/Result) covering normal, empty, one-byte, all-256-values, nonexistent input, unreadable input, output-path-collision, large-file cases. | PR into `docs/validation/` | 10 test cases documented (not yet executed — execution happens Sprint 8). |
-| **6** | Quality hardening: address SonarCloud findings in your module, run sanitizers (ASan/UBSan) against the encoder, fix anything they flag. Review Tanmayi/Yuvraj/Vibhav PRs actively — you're the architecture reviewer. | Review-only + small fix PRs | Your module has zero unresolved critical SonarCloud issues. |
-| **7** | Performance baseline: measure compression time/memory on a representative large file, record numbers (don't invent targets before measuring). Help finalize packaging (zip release build). | PR: `docs/validation/performance-baseline.md` | Numbers recorded, not guessed. |
-| **8** | Execute your 10 manual test cases (fill Actual Result + Pass/Fail). Update the Requirement Traceability Matrix for your requirements. Assemble the final report skeleton (you own overall assembly since you're lead) and rehearse the "architecture + integration" part of the demo. | Final PR + report doc | All JACK-F-001..004 requirements traced to code, tests, and manual results. |
+## 3. Official Timeline & Deliverables Plan
 
-## 4. What you personally must write in the shared documents
+### Phase 1: Engineering Documents (Part-1 — Completed Baseline)
+- [x] Initial C++17 build system with CMake, FetchContent GoogleTest, and basic GitHub Actions CI.
+- [x] Author IEEE Software Architecture & Design Document (`docs/design/architecture-v0.1.pdf`): Component diagram, Layered architecture, STRIDE threat model, 2 UML Sequence diagrams, and C++ API interfaces.
+- [x] Co-author IEEE Software Requirements Specification (`docs/srs/srs-v0.1.pdf`): Introduction, Overall Description, UC-01 requirements (`JACK-F-001..004`), 5 NFRs (`JACK-NF-001..005`), 2 UML Use-Case diagrams, and RTM.
+- [x] Co-author binary specification (`docs/design/archive-format.md` & `.pdf`).
+- [x] Review and approve Tanmayi's testing conventions and initial Test Plan.
 
-- **SRS (following `docs/meeting-notes/SRS_Template for SE.docx`):** Sections 1 (Introduction), 2 (Overall Description), Section 4.1 for UC-01's functional requirements (`JACK-F-001` through `JACK-F-004`), Section 5 (NFRs `JACK-NF-001` to `005`), Section 7.1 (2 UML Use-Case diagrams), and Section 8 (RTM).
-- **Design doc / SAD (following `docs/meeting-notes/SAD_Template.docx`):** System architecture diagram (Section 3.3), component descriptions (Section 3.4), architectural pattern rationale (Section 3.5), STRIDE threat model (Section 3.9), UML sequence diagram for UC-01 (Section 4.2), and C++ API interfaces (Section 4.3).
-- **Validation doc:** Your 10 UC-01 test cases, plus you're responsible for compiling everyone else's test cases into one document by Sprint 5.
-- **Maintenance plan (Sprint 8):** You draft the first version since you know the architecture best; others add their module's known limitations.
+---
 
-## 5. PR checklist (use for every PR you open)
+### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
+- [ ] Link GitHub Project board to repository.
+- [ ] Create backlog issues from SRS for all requirements (`JACK-F-001..016`, `JACK-NF-001..005`, `JACK-SR-001..005`).
+- [ ] Add custom field **Story Points** (Fibonacci: 1, 2, 3, 5, 8).
+- [ ] Assign your UC-01 backlog items:
+  - `JACK-F-001` (Input file reading & validation) — **3 SP**
+  - `JACK-F-002` (Frequency analysis table) — **5 SP**
+  - `JACK-F-003` (Huffman tree & code generation) — **5 SP**
+  - `JACK-F-004` (Bitstream encoding & archive generation) — **3 SP**
+  - `JACK-NF-001` (Performance sub-second execution) — **3 SP**
+- [ ] Set up Sprint-1 (19–23 Oct) and Sprint-2 (26–30 Oct) project views.
+- [ ] Lead dry-run practice week (12th–16th Oct) and freeze backlog on 19th Oct.
 
-- [ ] Branched from latest `main`
-- [ ] Unit tests added for new logic
-- [ ] Builds clean, `ctest` passes locally
-- [ ] PR description references the GitHub issue number
-- [ ] At least one teammate reviewed and approved
-- [ ] CI green before merge
-- [ ] SRS/design doc updated if this PR changes a requirement or interface
+---
 
-## 6. Pitfalls specific to your role
+### Phase 2: Sprint 1 — Core Working Product (19th Oct – 23rd Oct 2026)
+**Goal:** Deliver a working end-to-end compression engine, integrate with Tanmayi & Yuvraj for round-trip verification, and record the 1-minute working demo video.
 
-- Don't let "I'm the lead" become "I write most of the code." Weekly commit graphs are checked — everyone's contribution must be visible and roughly balanced.
-- Don't quietly change the archive format after Yuvraj/Tanmayi have built against it. Any format change is a design change: update `docs/design/archive-format.md`, tell the team, update tests.
-- Don't merge your own PRs without a review just because you're the integrator — the "no direct pushes, 1 review minimum" rule applies to you too.
-- Don't let the compress vertical slice slip past Sprint 3 — three other people's sprints (4 and 5) are blocked on it.
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (19–20 Oct)** | Build `FrequencyTable` and `HuffmanTree` builder | `include/compression/frequency_table.hpp`, `src/compression/frequency_table.cpp`, `src/compression/huffman_tree.cpp` |
+| **Day 2–3 (20–21 Oct)** | Build `BitWriter` with MSB-first packing | `include/io/bit_writer.hpp`, `src/io/bit_writer.cpp` |
+| **Day 3 (21 Oct)** | Implement `Encoder` and connect with Yuvraj's `ArchiveWriter` | `include/compression/encoder.hpp`, `src/compression/encoder.cpp` |
+| **Day 4 (22 Oct)** | Unit test coverage for all compression components | `tests/unit/test_frequency_table.cpp`, `tests/unit/test_huffman_tree.cpp`, `tests/unit/test_bit_writer.cpp` |
+| **Day 4 (22 Oct)** | Raise PR from `feature/saatwik-compression` | PR with passing CI, get review from Tanmayi & Yuvraj |
+| **Day 5 (23 Oct)** | **Integration & Round-Trip Milestone:** Pair with Tanmayi to verify `compress` → `decompress` produces byte-identical output | `cmp sample.txt restored.txt` returns 0 differences |
+| **Day 5 (23 Oct)** | **Record 1-Minute Video Demo:** Record working product CLI demo, upload to repository (`docs/media/sprint-1-demo.mp4`) | Video demo requirement fulfilled |
+
+---
+
+### Phase 2: Sprint 2 — Full Feature Product & Development Freeze (26th Oct – 30th Oct 2026)
+**Goal:** Complete interactive CLI menu, measure performance benchmarks, resolve code quality checks, record 2-minute demo video, and freeze development.
+
+| Day / Task | Implementation Target | Artifact / Code Location |
+|---|---|---|
+| **Day 1–2 (26–27 Oct)** | Build interactive CLI terminal navigation menu | `include/cli/menu.hpp`, `src/cli/menu.cpp`, `src/main.cpp` |
+| **Day 2–3 (27–28 Oct)** | Performance benchmarking on 5MB sample file (`JACK-NF-001`) | `docs/validation/performance-baseline.md` |
+| **Day 3–4 (28–29 Oct)** | Code hardening, address SonarCloud issues, verify sanitizers (ASan/UBSan) | Zero critical bugs across compression modules |
+| **Day 4 (29 Oct)** | Complete end-to-end integration and reconcile Requirement Traceability Matrix (RTM) | All `JACK-F-001..004` mapped to code and tests |
+| **Day 5 (30 Oct)** | **Record 2-Minute Video Demo:** Full demonstration of CLI menu (Compress, Statistics, Validate, Decompress) + upload video | Video demo uploaded to repo |
+| **Day 5 (30 Oct)** | **Development Freeze:** Tag release v1.0, lock `main` branch, finalize project report | Final submission ready |
+
+---
+
+## 4. Key Reviewer & Integrator Rules
+
+1. **Enforce the PR Standard:** Every member must raise a PR from their own feature branch. No direct pushes to `main`.
+2. **Review with Context:** As lead, verify that each PR contains tests and follows the approved header/API interfaces.
+3. **Keep Commit History Balanced:** Ensure all four teammates make regular, meaningful commits to avoid unbalanced contributor graphs during course evaluation.
+4. **Document Any Deviations:** If implementation alters any requirement from SRS or SAD, log it in `docs/deviations.md` for discussion during the final presentation.
