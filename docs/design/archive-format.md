@@ -117,6 +117,10 @@ Immediately follows Section B.
    - `total_bits = original_size`.
 3. **All 256 Bytes Present:**
    - `symbol_count = 256`. Handled cleanly by `uint16_t`.
+4. **Uncompressed Fallback (`IS_UNCOMPRESSED` set):**
+   - `symbol_count = 0`, `total_bits = original_size * 8`.
+   - `bitstream_data` contains the original bytes verbatim.
+   - `IS_EMPTY` and `IS_UNCOMPRESSED` are never set together.
 
 ---
 
@@ -126,8 +130,11 @@ When parsing a `.jack` archive, `ArchiveReader` and `IntegrityValidator` must en
 1. **Magic Bytes Check:** If the first 4 bytes $\ne \text{"JACK"}$, immediately abort with `ERROR_INVALID_MAGIC`.
 2. **Version Check:** If `format_version > 1`, abort with `ERROR_UNSUPPORTED_VERSION`.
 3. **Symbol Count Bounds:** If `symbol_count > 256`, abort with `ERROR_CORRUPT_HEADER`.
-4. **Payload Length Check:** File size must equal $18 + 2 + (N \times 9) + 8 + \lceil \text{total\_bits} / 8 \rceil$. If the physical file is smaller, abort with `ERROR_TRUNCATED_ARCHIVE`.
+4. **Payload Length Check:** File size must equal exactly 18 + 2 + (N × 9) + 8 + ceil(total_bits / 8). Smaller → `ERROR_TRUNCATED_ARCHIVE`. Larger → `ERROR_CORRUPT_HEADER`.
 5. **CRC Check:** After decompression, compute the CRC-32 of the restored bytes. If calculated CRC $\ne$ `checksum_crc32`, report `CORRUPT_ARCHIVE_CHECKSUM_MISMATCH`.
+6. **Symbol Table Consistency (when `symbol_count > 0` and not `IS_UNCOMPRESSED`):** symbols strictly ascending (no duplicates), every frequency > 0, sum of frequencies = `original_size`. Otherwise `ERROR_CORRUPT_HEADER`.
+7. **Flag Consistency:** reserved bits 2–7 must be 0. `IS_EMPTY` requires `original_size = 0`, `symbol_count = 0`, `total_bits = 0`. A non-empty, non-fallback archive requires `symbol_count >= 1`.
+8. **Tie-Breaking (open, owned by Saatwik/Tanmayi):**  Huffman node ordering on equal frequency must be specified before Sprint 2 ends.
 
 ---
 
@@ -136,6 +143,6 @@ When parsing a `.jack` archive, `ArchiveReader` and `IntegrityValidator` must en
 | Role | Member | Status | Notes |
 |---|---|:---:|---|
 | Architecture & Compression Lead | Saatwik | **Author / Approved** | Encoder & `BitWriter` designed against this spec. |
-| Archive & Statistics Lead | Yuvraj | **Co-Author / Pending Review** | Serializer & parser logic mirrors this layout. |
+| Archive & Statistics Lead | Yuvraj | **Approved** | Confirmed Big-Endian header offsets for ArchiveWriter/ArchiveReader. Added IS_UNCOMPRESSED layout and consistency rules. |
 | Testing & Decompression Lead | Tanmayi | **Approved** | Confirmed MSB-first `BitReader` agreement. |
 | Security & Integrity Lead | Vibhav | **Pending Review** | Confirmed CRC-32 field position & bounds checks. |
