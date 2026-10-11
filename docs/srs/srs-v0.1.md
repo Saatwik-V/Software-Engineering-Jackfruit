@@ -171,8 +171,8 @@ Jackfruit specifies **16 total Functional Requirements** (4 per module use case)
 | Req ID | Requirement (The system shall...) | Type | Priority | Source / Stakeholder | Acceptance Criteria / Test Case Ref | Comments / Dependencies |
 |---|---|---|:---:|---|---|---|
 | **JACK-F-009** | Read and parse `.jack` archive metadata without reading or decompressing the full compressed payload. | Functional | High | CI/CD Lead / User | AC-JACK-F-009: Header inspection completes in $\le 50$ ms even for large files. Test: `TC-STAT-01` | Fast I/O seek |
-| **JACK-F-010** | Calculate uncompressed size, compressed size, compression ratio ($\text{original} / \text{compressed}$), and percentage space saved. | Functional | High | User Analytics | AC-JACK-F-010: Math accurate to 2 decimal places. Test: `TC-STAT-02` | Math calculation module |
-| **JACK-F-011** | Format and render calculated metrics in a clean, aligned terminal table. | Functional | Medium | End User UI | AC-JACK-F-011: Table output properly aligned and legible. Test: `TC-STAT-03` | Terminal formatting |
+| **JACK-F-010** | Calculate uncompressed size, compressed size (on-disk archive size including header), compression ratio (original / compressed), percentage space saved (negative values displayed as-is, not clamped), and inspection time in milliseconds. | Functional | High | User Analytics | AC-JACK-F-010: Math accurate to 2 decimal places. Test: `TC-STAT-02` | Math calculation module |
+| **JACK-F-011** | Format and render calculated metrics in a clean, aligned terminal table. For an empty-file archive, ratio and savings display as `N/A`. | Functional | Medium | End User UI | AC-JACK-F-011: Table output properly aligned and legible. Test: `TC-STAT-03` | Terminal formatting |
 | **JACK-F-012** | Detect non-jackfruit or corrupted archive files during inspection and report a human-readable error. | Functional | High | Robustness | AC-JACK-F-012: Graceful error message without exceptions or crashes. Test: `TC-STAT-04` | Integrates with validator |
 
 ---
