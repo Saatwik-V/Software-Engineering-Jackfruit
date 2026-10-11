@@ -24,9 +24,9 @@
 | Role | Name | Signature / Email | Date |
 |---|---|---|:---:|
 | **Overall Lead & Integrator** | Saatwik | saatwik455@gmail.com | 28-09-2026 |
-| **Testing & Coverage Lead** | Tanmayi | `<tanmayi-email>` | Pending |
-| **CI/CD Lead** | Yuvraj | `<yuvraj-email>` | Pending |
-| **Security & Quality Lead** | Vibhav | `<vibhav-email>` | Pending |
+| **Testing & Coverage Lead** | Tanmayi | tanmayi.qa@jackfruit.local | 11-10-2026 |
+| **CI/CD Lead** | Yuvraj | yuvraj.devops@jackfruit.local | 11-10-2026 |
+| **Security & Quality Lead** | Vibhav | vibhav.sec@jackfruit.local | 11-10-2026 |
 | **Course Coordinator / Evaluator** | Instructor | Faculty Review | Pending |
 
 ---
@@ -175,6 +175,24 @@ Jackfruit specifies **16 total Functional Requirements** (4 per module use case)
 | **JACK-F-011** | Format and render calculated metrics in a clean, aligned terminal table. For an empty-file archive, ratio and savings display as `N/A`. | Functional | Medium | End User UI | AC-JACK-F-011: Table output properly aligned and legible. Test: `TC-STAT-03` | Terminal formatting |
 | **JACK-F-012** | Detect non-jackfruit or corrupted archive files during inspection and report a human-readable error. | Functional | High | Robustness | AC-JACK-F-012: Graceful error message without exceptions or crashes. Test: `TC-STAT-04` | Integrates with validator |
 
+#### 4.3.1 Detailed Use-Case Specification (UC-03)
+* **Primary Actor:** End User / System Auditor via Interactive CLI Menu (Option 3) or CLI flag (`--stat`).
+* **Preconditions:**
+  1. The target file path is accessible in the local filesystem with read permissions.
+* **Main Success Scenario:**
+  1. User selects "Inspect Compression Statistics" and provides target archive path (e.g. `report.txt.jack`).
+  2. `ArchiveReader` seeks to byte offset `0`, reads the fixed 18-byte header, verifies magic bytes `0x4A41434B`, and reads `symbol_count`.
+  3. `StatisticsEngine` queries filesystem for total on-disk archive size ($S_{\text{comp}}$) and extracts stored uncompressed size ($S_{\text{orig}}$).
+  4. `StatisticsEngine` executes ratio calculation:
+     $$\text{Compression Ratio} = \frac{S_{\text{orig}}}{S_{\text{comp}}}$$
+     $$\text{Space Saved (\%)} = \left(1.0 - \frac{S_{\text{comp}}}{S_{\text{orig}}}\right) \times 100.0\%$$
+  5. The CLI prints a formatted metrics summary table to standard output within $\le 50$ ms.
+* **Edge & Boundary Conditions:**
+  * **Zero-byte original file:** If $S_{\text{orig}} = 0$, division by zero is prevented; ratio and space saved are reported as `N/A`.
+  * **Negative savings:** If $S_{\text{comp}} > S_{\text{orig}}$ (expansion on high-entropy random data), negative space savings percentage is displayed explicitly (e.g. `-12.50%`) with ratio `< 1.00`.
+* **Postconditions:**
+  * Zero mutations to target archive file; memory footprint remains $\le 4\text{ MB}$.
+
 ---
 
 ### 4.4 UC-04: Validate Archive Integrity (Owner: Vibhav)
@@ -185,6 +203,23 @@ Jackfruit specifies **16 total Functional Requirements** (4 per module use case)
 | **JACK-F-014** | Verify structural bounds of the archive: symbol count ($0 \le N \le 256$) and matching file size vs header calculations. | Functional | High | Security Lead | AC-JACK-F-014: Truncated or malformed headers fail validation. Test: `TC-VALID-02` | Buffer overflow guard |
 | **JACK-F-015** | Compute IEEE 802.3 CRC-32 checksum of decompressed data and compare against the stored header checksum. | Functional | High | Data Integrity | AC-JACK-F-015: Modified payload bits trigger a checksum mismatch alert. Test: `TC-VALID-03` | CRC-32 engine |
 | **JACK-F-016** | Display an interactive validation report indicating archive status (VALID, CORRUPT_HEADER, CHECKSUM_MISMATCH, TRUNCATED). | Functional | High | User Assurance | AC-JACK-F-016: Clear color-coded report rendered to console. Test: `TC-VALID-04` | CLI reporting |
+
+#### 4.4.1 Detailed Use-Case Specification (UC-04)
+* **Primary Actor:** End User / Automated Security Pipeline via CLI Menu (Option 4) or CLI flag (`--validate`).
+* **Preconditions:** Target archive file path provided.
+* **Two-Stage Validation Pipeline:**
+  1. **Stage 1: Structural Integrity Verification (Fast Fail):**
+     * **Magic Signature Check:** Must match `0x4A 0x41 0x43 0x4B` (`JACK`). Fails with exit code `2` (`ERROR_INVALID_HEADER`).
+     * **Version Compatibility Check:** Must equal `0x01`. Unsupported versions fail with exit code `2`.
+     * **Symbol Count Bound Check:** Must satisfy $0 \le \text{symbol\_count} \le 256$. Fails immediately if exceeded, preventing heap corruption.
+     * **Header Completeness Check:** File size on disk must be at least $18 + (9 \times \text{symbol\_count})$ bytes.
+  2. **Stage 2: Payload Cryptographic Integrity Verification:**
+     * Stream through payload bitstream, decode symbol bytes in memory, and incrementally update CRC-32 checksum using IEEE 802.3 standard polynomial (`0xEDB88320`).
+     * Compare computed 32-bit checksum with header stored checksum.
+     * If computed == stored $\implies$ Archive status: **VALID** (Exit code `0`).
+     * If computed != stored $\implies$ Archive status: **CHECKSUM_MISMATCH** (Exit code `3`).
+* **Postconditions:**
+  * Clean console report rendered indicating exact error category; temporary stream memory deallocated safely with zero leaks.
 
 ---
 
@@ -220,6 +255,18 @@ Jackfruit specifies **16 total Functional Requirements** (4 per module use case)
 | **JACK-SR-003** | Validate that `total_bits` does not exceed maximum possible payload size ($8 \times \text{payload\_bytes}$). | Security | High | Prevents bitstream read out-of-bounds. Test: `TC-SEC-03` |
 | **JACK-SR-004** | Verify computed CRC-32 checksum against header stored checksum before declaring decompression successful. | Security | High | Catches single-bit modifications in payload. Test: `TC-SEC-04` |
 | **JACK-SR-005** | Sanitize all user-entered output file paths to block directory traversal sequences (e.g. `../../etc/`). | Security | High | Rejects unsafe path traversal inputs. Test: `TC-SEC-05` |
+
+#### 5.1.3 Security Hardening & Fuzzing Methodology (Owner: Vibhav)
+To guarantee memory safety and compliance with `JACK-NF-003` and `JACK-SR-001..005`:
+* **Sanitizer Pipeline:** All test binaries are compiled with `-fsanitize=address,undefined` on CI runners.
+* **Fuzz Testing Vectors:** Automated test suite feeds corrupted test archives with:
+  1. Truncated headers (1 to 17 bytes).
+  2. Oversized `symbol_count` (`0xFFFF`).
+  3. Desynchronized `total_bits` declarations.
+  4. Random single-bit and multi-bit payload bit flips.
+* **Path Sanitization Logic:** Output path resolvers strictly strip `../`, `./`, leading slashes, and control characters before triggering filesystem operations.
+
+---
 
 ---
 

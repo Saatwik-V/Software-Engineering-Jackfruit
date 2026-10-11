@@ -58,7 +58,7 @@ The project is governed by a 2-Part evaluation structure:
 - [x] **Software Requirements Specification (SRS):** IEEE format, 16 FRs (`JACK-F-001..016`), 5 NFRs (`JACK-NF-001..005`), 5 Security Reqs (`JACK-SR-001..005`), 2 UML Use-Case diagrams, RTM (`docs/srs/srs-v0.1.pdf`) (Saatwik leads, team contributed)
 - [x] **Software Architecture & Design (SAD):** IEEE format, Layered architecture, Component diagram, STRIDE threat model, 2 UML Sequence diagrams, C++ API contracts (`docs/design/architecture-v0.1.pdf`) (Saatwik)
 - [x] **Testing Conventions:** GoogleTest naming and directory hierarchy (`docs/design/testing-conventions.md`) (Tanmayi)
-- [ ] **Software Test Plan (STP):** IEEE 829 format, 10 baseline test cases (`TC-COMP-01..03`, `TC-DECOMP-01..03`, `TC-STAT-01`, `TC-VALID-01`, `TC-PERF-01`, `TC-SEC-01`), 2-sprint schedule, compiled to `docs/validation/test-plan-v0.1.pdf` (Tanmayi — in progress via feedback guide)
+- [x] **Software Test Plan (STP):** IEEE 829 format, 10 baseline test cases (`TC-COMP-01..03`, `TC-DECOMP-01..03`, `TC-STAT-01`, `TC-VALID-01`, `TC-PERF-01`, `TC-SEC-01`), 2-sprint schedule, compiled to `docs/validation/test-plan-v0.1.pdf` (Tanmayi + Team)
 
 ---
 
