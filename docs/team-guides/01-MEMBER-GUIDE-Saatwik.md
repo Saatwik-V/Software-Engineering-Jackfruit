@@ -42,16 +42,21 @@ You own everything needed to analyze and transform raw input bytes into an optim
 ---
 
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
-- [ ] Link GitHub Project board to repository.
-- [ ] Create backlog issues from SRS for all requirements (`JACK-F-001..016`, `JACK-NF-001..005`, `JACK-SR-001..005`).
-- [ ] Add custom field **Story Points** (Fibonacci: 1, 2, 3, 5, 8).
-- [ ] Assign your UC-01 backlog items:
-  - `JACK-F-001` (Input file reading & validation) — **3 SP**
-  - `JACK-F-002` (Frequency analysis table) — **5 SP**
-  - `JACK-F-003` (Huffman tree & code generation) — **5 SP**
-  - `JACK-F-004` (Bitstream encoding & archive generation) — **3 SP**
-  - `JACK-NF-001` (Performance sub-second execution) — **3 SP**
-- [ ] Set up Sprint-1 (19–23 Oct) and Sprint-2 (26–30 Oct) project views.
+- [x] Link GitHub Project board to repository (`Jackfruit Huffman Compressor` — Project 3).
+- [x] Configure custom fields: **Story Points** (Fibonacci: 1, 2, 3, 5, 8) and **Sprint** (Single Select: `Sprint 1`, `Sprint 2`, `Backlog`).
+- [x] Set up Sprint-1 (`19–23 Oct`), Sprint-2 (`26–30 Oct`), and Backlog project views.
+- [x] Create and assign your UC-01 backlog items on the project board:
+  - **Issue #18:** `[UC-01] JACK-F-001: File input path reading, validation & permissions check` — **3 SP** (Sprint 1)
+  - **Issue #19:** `[UC-01] JACK-F-002: Byte frequency analysis & character count distribution` — **5 SP** (Sprint 1)
+  - **Issue #20:** `[UC-01] JACK-F-003: Min-heap priority queue & Huffman tree prefix code construction` — **5 SP** (Sprint 1)
+  - **Issue #21:** `[UC-01] JACK-F-004: Bitstream encoding & archive payload generation` — **3 SP** (Sprint 1)
+  - **Sprint 2 Issue:** `[CLI] Interactive terminal navigation menu & performance benchmarking (< 1s)` (`JACK-NF-001`) — **5 SP** (Sprint 2)
+  *(Total: 21 Story Points — 16 SP in Sprint 1, 5 SP in Sprint 2)*
+- [x] Author comprehensive teammate backlog setup guides:
+  - `docs/meeting-notes/backlog-guide-tanmayi.md`
+  - `docs/meeting-notes/backlog-guide-yuvraj.md`
+  - `docs/meeting-notes/backlog-guide-vibhav.md`
+- [ ] Assist teammates in adding their 6 issues each to Project 3 before Sprint 1 kickoff (19th Oct).
 - [ ] Lead dry-run practice week (12th–16th Oct) and freeze backlog on 19th Oct.
 
 ---

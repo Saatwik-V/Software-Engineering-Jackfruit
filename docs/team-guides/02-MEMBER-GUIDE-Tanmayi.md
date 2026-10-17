@@ -34,22 +34,26 @@ You own turning a valid compressed archive back into an exact byte-identical rep
 
 ## 3. Official Timeline & Deliverables Plan
 
-### Phase 1: Engineering Documents (Part-1 — In Progress / Final Sign-off)
+### Phase 1: Engineering Documents (Part-1 — Completed Baseline)
 - [x] Review and sign off on binary archive specification (`docs/design/archive-format.md`).
 - [x] Author GoogleTest conventions (`docs/design/testing-conventions.md`).
 - [x] Contribute UC-02 requirements (`JACK-F-005..008`) to IEEE SRS (`docs/srs/srs-v0.1.pdf`).
-- [ ] **Finalize Software Test Plan:** Incorporate the 10 concrete test cases and updated 2-Sprint schedule from `docs/meeting-notes/review-feedback-tanmayi-testplan.md` into `docs/validation/test-plan-v0.1.md`.
-- [ ] Compile `docs/validation/test-plan-v0.1.pdf` via `python3 scripts/generate_docs_pdf.py` and submit PR.
+- [x] Finalize Software Test Plan: Incorporate the 10 concrete test cases and updated 2-Sprint schedule into `docs/validation/test-plan-v0.1.md`.
+- [x] Compile and sign off on `docs/validation/test-plan-v0.1.pdf` (committed to `main`).
 
 ---
 
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
-- [ ] In the linked GitHub Project board, verify your assigned UC-02 backlog items:
-  - `JACK-F-005` (Archive header reading & magic validation) — **3 SP**
-  - `JACK-F-006` (Huffman tree reconstruction from archive) — **5 SP**
-  - `JACK-F-007` (BitReader boundary bit parsing) — **3 SP**
-  - `JACK-F-008` (Byte-identical file reconstruction) — **5 SP**
-  - `JACK-SR-001` / `JACK-SR-003` (Malformed archive & truncation safety) — **3 SP**
+> **Step-by-Step Instructions & Copy-Paste Issue Templates:** See [docs/meeting-notes/backlog-guide-tanmayi.md](file:///Users/saatwik/Documents/Software-engineering-jackfruit/Software-Engineering-Jackfruit/docs/meeting-notes/backlog-guide-tanmayi.md).
+
+- [ ] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
+  - `[UC-02] Parse & validate fixed archive header` (`JACK-F-005`, `JACK-SR-001`) — **3 SP** (Sprint 1)
+  - `[UC-02] Reconstruct Huffman decoding tree from metadata` (`JACK-F-006`) — **5 SP** (Sprint 1)
+  - `[UC-02] BitReader sequential MSB-first bit extraction` (`JACK-F-007`) — **3 SP** (Sprint 1)
+  - `[UC-02] Round-trip byte-identical file restoration` (`JACK-F-008`) — **5 SP** (Sprint 1)
+  - `[TEST] Wire automated code coverage (gcov/lcov ≥80%) into CI` (Quality Gate) — **5 SP** (Sprint 2)
+  - `[TEST] Execute & record 10 baseline test cases` (`TC-COMP/DECOMP/STAT/VALID`) — **3 SP** (Sprint 2)
+  *(Total: 24 Story Points — 16 SP in Sprint 1, 8 SP in Sprint 2)*
 - [ ] Participate in dry-run practice week (12th–16th Oct) testing branch workflows.
 - [ ] Confirm backlog lock on 19th Oct.
 

@@ -63,15 +63,22 @@ The project is governed by a 2-Part evaluation structure:
 ---
 
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
-- [ ] **GitHub Project Linked:** Project board created and linked to `Software-Engineering-Jackfruit` repository.
-- [ ] **Issue Creation from SRS:** All functional requirements (`JACK-F-001` through `016`), NFRs (`JACK-NF-001..005`), and Security requirements (`JACK-SR-001..005`) entered as GitHub issues with acceptance criteria.
-- [ ] **Story Point Field Created:** Custom field **Story Points** enabled in GitHub Projects using Fibonacci sequence (1, 2, 3, 5, 8).
-- [ ] **Story Points Assigned:**
-  - Saatwik (UC-01): `JACK-F-001` (3 SP), `JACK-F-002` (5 SP), `JACK-F-003` (5 SP), `JACK-F-004` (3 SP).
-  - Tanmayi (UC-02): `JACK-F-005` (3 SP), `JACK-F-006` (5 SP), `JACK-F-007` (3 SP), `JACK-F-008` (5 SP).
-  - Yuvraj (UC-03 / Archive): Archive Serialization/Deserialization (5 SP), `JACK-F-009` (2 SP), `JACK-F-010` (2 SP), `JACK-F-011` (3 SP), `JACK-F-012` (2 SP).
-  - Vibhav (UC-04 / Security): CRC32 Engine (3 SP), `JACK-F-013` (2 SP), `JACK-F-014` (3 SP), `JACK-F-015` (2 SP), `JACK-F-016` (3 SP).
-- [ ] **Sprint Allocation:** Stories mapped into Sprint-1 (19–23 Oct) and Sprint-2 (26–30 Oct) milestone views.
+- [x] **GitHub Project Linked:** Project board `Jackfruit Huffman Compressor` (Project 3) created and linked to `Software-Engineering-Jackfruit` repository.
+- [x] **Custom Fields & Views Configured:**
+  - `Story Points` field enabled using Fibonacci sequence (`1, 2, 3, 5, 8`).
+  - `Sprint` field configured (`Sprint 1`, `Sprint 2`, `Backlog`).
+  - Sprint views configured: `Sprint 1(19-23 Oct)`, `Sprint 2 (26–30 Oct)`.
+- [x] **Saatwik Backlog Issues Created:** Issues #18, #19, #20, #21 assigned on project board with story points and Sprint 1 mapping.
+- [x] **Backlog Setup Guides Generated for Teammates:**
+  - `docs/meeting-notes/backlog-guide-tanmayi.md` (6 issues, 24 SP)
+  - `docs/meeting-notes/backlog-guide-yuvraj.md` (6 issues, 22 SP)
+  - `docs/meeting-notes/backlog-guide-vibhav.md` (6 issues, 20 SP)
+- [ ] **Teammates Populate Backlog Items on Project Board:**
+  - **Saatwik (UC-01 & Architecture):** 5 issues / 21 SP (Sprint 1: 16 SP, Sprint 2: 5 SP).
+  - **Tanmayi (UC-02 & Testing):** 6 issues / 24 SP (Sprint 1: 16 SP, Sprint 2: 8 SP).
+  - **Yuvraj (UC-03 & CI/CD):** 6 issues / 22 SP (Sprint 1: 11 SP, Sprint 2: 11 SP).
+  - **Vibhav (UC-04 & Security):** 6 issues / 20 SP (Sprint 1: 5 SP, Sprint 2: 15 SP).
+  *(Total Project Backlog: 23 issues, 87 Story Points across team)*
 - [ ] **Dry-Run Week (12th – 16th Oct):** Team tests PR creation, review flow, and branch merges.
 - [ ] **Backlog Final Lock (19th Oct):** Final review and grooming of backlog before Sprint 1 kickoff.
 
