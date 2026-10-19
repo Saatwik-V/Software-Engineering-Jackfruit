@@ -10,8 +10,17 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Include directory structure
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Core library containing modular compression, io, archive, integrity components
+add_library(jackfruit_core STATIC
+    src/io/file_validator.cpp
+    src/compression/frequency_table.cpp
+    src/compression/huffman_tree.cpp
+)
+target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # Main executable
 add_executable(jackfruit src/main.cpp)
+target_link_libraries(jackfruit PRIVATE jackfruit_core)
 
 # Testing configuration
 include(CTest)
@@ -27,8 +36,13 @@ if(BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
 
     # Unit test executable
-    add_executable(jackfruit_tests tests/unit/test_placeholder.cpp)
-    target_link_libraries(jackfruit_tests PRIVATE GTest::gtest_main)
+    add_executable(jackfruit_tests
+        tests/unit/test_placeholder.cpp
+        tests/unit/test_file_validator.cpp
+        tests/unit/test_frequency_table.cpp
+        tests/unit/test_huffman_tree.cpp
+    )
+    target_link_libraries(jackfruit_tests PRIVATE jackfruit_core GTest::gtest_main)
 
     include(GoogleTest)
     gtest_discover_tests(jackfruit_tests)

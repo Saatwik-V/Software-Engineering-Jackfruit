@@ -46,18 +46,15 @@ You own everything needed to analyze and transform raw input bytes into an optim
 - [x] Configure custom fields: **Story Points** (Fibonacci: 1, 2, 3, 5, 8) and **Sprint** (Single Select: `Sprint 1`, `Sprint 2`, `Backlog`).
 - [x] Set up Sprint-1 (`19–23 Oct`), Sprint-2 (`26–30 Oct`), and Backlog project views.
 - [x] Create and assign your UC-01 backlog items on the project board:
-  - **Issue #18:** `[UC-01] JACK-F-001: File input path reading, validation & permissions check` — **3 SP** (Sprint 1)
-  - **Issue #19:** `[UC-01] JACK-F-002: Byte frequency analysis & character count distribution` — **5 SP** (Sprint 1)
-  - **Issue #20:** `[UC-01] JACK-F-003: Min-heap priority queue & Huffman tree prefix code construction` — **5 SP** (Sprint 1)
-  - **Issue #21:** `[UC-01] JACK-F-004: Bitstream encoding & archive payload generation` — **3 SP** (Sprint 1)
+  - **Issue #21:** `[UC-01] JACK-F-001: File input path reading, validation & permissions check` — **3 SP** (Sprint 1)
+  - **Issue #18:** `[UC-01] JACK-F-002: Byte frequency table construction & Huffman prefix tree builder` — **5 SP** (Sprint 1)
+  - **Issue #19:** `[UC-01] JACK-F-003: BitWriter MSB-first bitstream packing engine` — **3 SP** (Sprint 1)
+  - **Issue #20:** `[UC-01] JACK-F-004: Core Huffman encoder & .jack archive writer integration` — **5 SP** (Sprint 1)
   - **Sprint 2 Issue:** `[CLI] Interactive terminal navigation menu & performance benchmarking (< 1s)` (`JACK-NF-001`) — **5 SP** (Sprint 2)
   *(Total: 21 Story Points — 16 SP in Sprint 1, 5 SP in Sprint 2)*
-- [x] Author comprehensive teammate backlog setup guides:
-  - `docs/meeting-notes/backlog-guide-tanmayi.md`
-  - `docs/meeting-notes/backlog-guide-yuvraj.md`
-  - `docs/meeting-notes/backlog-guide-vibhav.md`
-- [ ] Assist teammates in adding their 6 issues each to Project 3 before Sprint 1 kickoff (19th Oct).
-- [ ] Lead dry-run practice week (12th–16th Oct) and freeze backlog on 19th Oct.
+- [x] Author comprehensive teammate backlog setup guides (`backlog-guide-{tanmayi,yuvraj,vibhav}.md`).
+- [x] Teammates populated their assigned 6 issues each onto the project board.
+- [x] Lead dry-run practice week and freeze backlog on 19th Oct for Sprint 1 kickoff.
 
 ---
 

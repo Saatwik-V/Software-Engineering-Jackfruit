@@ -45,16 +45,16 @@ You own making sure the tool never trusts an external or corrupted file blindly:
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
 > **Step-by-Step Instructions & Copy-Paste Issue Templates:** See [docs/meeting-notes/backlog-guide-vibhav.md](file:///Users/saatwik/Documents/Software-engineering-jackfruit/Software-Engineering-Jackfruit/docs/meeting-notes/backlog-guide-vibhav.md).
 
-- [ ] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
-  - `[SECURITY] Implement standalone IEEE 802.3 CRC-32 checksum engine` (`JACK-F-015`, Security Spec) — **3 SP** (Sprint 1)
-  - `[SECURITY] Support compressor pipeline with archive CRC-32 integration` (Sprint 1 Milestone) — **2 SP** (Sprint 1)
-  - `[UC-04] Structural archive integrity & bounds validator` (`JACK-F-013`, `JACK-F-014`) — **3 SP** (Sprint 2)
-  - `[UC-04] CRC-32 mismatch detection & interactive validate CLI` (`JACK-F-015`, `JACK-F-016`) — **5 SP** (Sprint 2)
-  - `[SECURITY] Memory sanitizers (ASan/UBSan) & malformed input fuzz suite` (`JACK-SR-001..005`) — **5 SP** (Sprint 2)
-  - `[SECURITY] Author security review report & threat mitigations doc` (STRIDE Mitigations) — **2 SP** (Sprint 2)
+- [x] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
+  - **Issue #35:** `[SECURITY] Implement standalone IEEE 802.3 CRC-32 checksum engine` (`JACK-F-015`, Security Spec) — **3 SP** (Sprint 1)
+  - **Issue #36:** `[SECURITY] Support compressor pipeline with archive CRC-32 integration` (Sprint 1 Milestone) — **2 SP** (Sprint 1)
+  - **Sprint 2 Issue:** `[UC-04] Structural archive integrity & bounds validator` (`JACK-F-013`, `JACK-F-014`) — **3 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[UC-04] CRC-32 mismatch detection & interactive validate CLI` (`JACK-F-015`, `JACK-F-016`) — **5 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[SECURITY] Memory sanitizers (ASan/UBSan) & malformed input fuzz suite` (`JACK-SR-001..005`) — **5 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[SECURITY] Author security review report & threat mitigations doc` (STRIDE Mitigations) — **2 SP** (Sprint 2)
   *(Total: 20 Story Points — 5 SP in Sprint 1, 15 SP in Sprint 2)*
-- [ ] Participate in dry-run practice week (12th–16th Oct) testing PR creation and code review.
-- [ ] Confirm backlog lock on 19th Oct.
+- [x] Participate in dry-run practice week (12th–16th Oct) testing PR creation and code review.
+- [x] Confirm backlog lock on 19th Oct.
 
 ---
 

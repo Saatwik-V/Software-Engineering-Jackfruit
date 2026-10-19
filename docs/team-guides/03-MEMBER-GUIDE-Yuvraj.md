@@ -46,16 +46,16 @@ You own the structural backbone of the archive files and the team's automated bu
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
 > **Step-by-Step Instructions & Copy-Paste Issue Templates:** See [docs/meeting-notes/backlog-guide-yuvraj.md](file:///Users/saatwik/Documents/Software-engineering-jackfruit/Software-Engineering-Jackfruit/docs/meeting-notes/backlog-guide-yuvraj.md).
 
-- [ ] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
-  - `[ARCHIVE] Implement ArchiveWriter for 18-byte header & metadata serialization` (`JACK-F-004`) — **5 SP** (Sprint 1)
-  - `[ARCHIVE] Implement ArchiveReader for header validation & metadata parsing` (`JACK-F-005`) — **3 SP** (Sprint 1)
-  - `[CI/CD] Automate PR builds & CTest test runner via GitHub Actions` (CI Baseline) — **3 SP** (Sprint 1)
-  - `[UC-03] Fast metadata inspection & ratio computation engine` (`JACK-F-009`, `JACK-F-010`) — **3 SP** (Sprint 2)
-  - `[UC-03] Formatted statistics terminal table & CLI command` (`JACK-F-011`, `JACK-F-012`) — **3 SP** (Sprint 2)
-  - `[CI/CD] Wire SonarCloud static analysis & automated release packaging` (Quality & Packaging) — **5 SP** (Sprint 2)
+- [x] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
+  - **Issue #23:** `[ARCHIVE] Implement ArchiveWriter for 18-byte header & metadata serialization` (`JACK-F-004`) — **5 SP** (Sprint 1)
+  - **Issue #24:** `[ARCHIVE] Implement ArchiveReader for header validation & metadata parsing` (`JACK-F-005`) — **3 SP** (Sprint 1)
+  - **Issue #25:** `[CI/CD] Automate PR builds & CTest test runner via GitHub Actions` (CI Baseline) — **3 SP** (Sprint 1)
+  - **Sprint 2 Issue:** `[UC-03] Fast metadata inspection & ratio computation engine` (`JACK-F-009`, `JACK-F-010`) — **3 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[UC-03] Formatted statistics terminal table & CLI command` (`JACK-F-011`, `JACK-F-012`) — **3 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[CI/CD] Wire SonarCloud static analysis & automated release packaging` (Quality & Packaging) — **5 SP** (Sprint 2)
   *(Total: 22 Story Points — 11 SP in Sprint 1, 11 SP in Sprint 2)*
-- [ ] Participate in dry-run practice week (12th–16th Oct) testing CI PR gates.
-- [ ] Confirm backlog lock on 19th Oct.
+- [x] Participate in dry-run practice week (12th–16th Oct) testing CI PR gates.
+- [x] Confirm backlog lock on 19th Oct.
 
 ---
 
