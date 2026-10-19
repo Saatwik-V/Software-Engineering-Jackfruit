@@ -46,16 +46,16 @@ You own turning a valid compressed archive back into an exact byte-identical rep
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
 > **Step-by-Step Instructions & Copy-Paste Issue Templates:** See [docs/meeting-notes/backlog-guide-tanmayi.md](file:///Users/saatwik/Documents/Software-engineering-jackfruit/Software-Engineering-Jackfruit/docs/meeting-notes/backlog-guide-tanmayi.md).
 
-- [ ] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
-  - `[UC-02] Parse & validate fixed archive header` (`JACK-F-005`, `JACK-SR-001`) — **3 SP** (Sprint 1)
-  - `[UC-02] Reconstruct Huffman decoding tree from metadata` (`JACK-F-006`) — **5 SP** (Sprint 1)
-  - `[UC-02] BitReader sequential MSB-first bit extraction` (`JACK-F-007`) — **3 SP** (Sprint 1)
-  - `[UC-02] Round-trip byte-identical file restoration` (`JACK-F-008`) — **5 SP** (Sprint 1)
-  - `[TEST] Wire automated code coverage (gcov/lcov ≥80%) into CI` (Quality Gate) — **5 SP** (Sprint 2)
-  - `[TEST] Execute & record 10 baseline test cases` (`TC-COMP/DECOMP/STAT/VALID`) — **3 SP** (Sprint 2)
+- [x] In the linked GitHub Project board (`Jackfruit Huffman Compressor` — Project 3), create your 6 backlog issues and assign Story Points & Sprints:
+  - **Issue #29:** `[UC-02] Parse & validate fixed archive header` (`JACK-F-005`, `JACK-SR-001`) — **3 SP** (Sprint 1)
+  - **Issue #30:** `[UC-02] Reconstruct Huffman decoding tree from metadata` (`JACK-F-006`) — **5 SP** (Sprint 1)
+  - **Issue #31:** `[UC-02] BitReader sequential MSB-first bit extraction` (`JACK-F-007`) — **3 SP** (Sprint 1)
+  - **Issue #32:** `[UC-02] Round-trip byte-identical file restoration` (`JACK-F-008`) — **5 SP** (Sprint 1)
+  - **Sprint 2 Issue:** `[TEST] Wire automated code coverage (gcov/lcov ≥80%) into CI` (Quality Gate) — **5 SP** (Sprint 2)
+  - **Sprint 2 Issue:** `[TEST] Execute & record 10 baseline test cases` (`TC-COMP/DECOMP/STAT/VALID`) — **3 SP** (Sprint 2)
   *(Total: 24 Story Points — 16 SP in Sprint 1, 8 SP in Sprint 2)*
-- [ ] Participate in dry-run practice week (12th–16th Oct) testing branch workflows.
-- [ ] Confirm backlog lock on 19th Oct.
+- [x] Participate in dry-run practice week (12th–16th Oct) testing branch workflows.
+- [x] Confirm backlog lock on 19th Oct.
 
 ---
 

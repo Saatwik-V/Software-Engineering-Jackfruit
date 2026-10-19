@@ -73,14 +73,14 @@ The project is governed by a 2-Part evaluation structure:
   - `docs/meeting-notes/backlog-guide-tanmayi.md` (6 issues, 24 SP)
   - `docs/meeting-notes/backlog-guide-yuvraj.md` (6 issues, 22 SP)
   - `docs/meeting-notes/backlog-guide-vibhav.md` (6 issues, 20 SP)
-- [ ] **Teammates Populate Backlog Items on Project Board:**
-  - **Saatwik (UC-01 & Architecture):** 5 issues / 21 SP (Sprint 1: 16 SP, Sprint 2: 5 SP).
-  - **Tanmayi (UC-02 & Testing):** 6 issues / 24 SP (Sprint 1: 16 SP, Sprint 2: 8 SP).
-  - **Yuvraj (UC-03 & CI/CD):** 6 issues / 22 SP (Sprint 1: 11 SP, Sprint 2: 11 SP).
-  - **Vibhav (UC-04 & Security):** 6 issues / 20 SP (Sprint 1: 5 SP, Sprint 2: 15 SP).
-  *(Total Project Backlog: 23 issues, 87 Story Points across team)*
-- [ ] **Dry-Run Week (12th – 16th Oct):** Team tests PR creation, review flow, and branch merges.
-- [ ] **Backlog Final Lock (19th Oct):** Final review and grooming of backlog before Sprint 1 kickoff.
+- [x] **Teammates Populate Backlog Items on Project Board:**
+  - **Saatwik (UC-01 & Architecture):** Issues `#18`, `#19`, `#20`, `#21` (Sprint 1: 16 SP) + Sprint 2 CLI (5 SP) = 21 SP.
+  - **Tanmayi (UC-02 & Testing):** Issues `#29`, `#30`, `#31`, `#32` (Sprint 1: 16 SP) + Sprint 2 Testing (8 SP) = 24 SP.
+  - **Yuvraj (UC-03 & CI/CD):** Issues `#23`, `#24`, `#25` (Sprint 1: 11 SP) + Sprint 2 Stats/Release (11 SP) = 22 SP.
+  - **Vibhav (UC-04 & Security):** Issues `#35`, `#36` (Sprint 1: 5 SP) + Sprint 2 Validation/Hardening (15 SP) = 20 SP.
+  *(Total Project Backlog: 23 issues, 87 Story Points; Sprint 1: 13 issues, 48 Story Points)*
+- [x] **Dry-Run Week (12th – 16th Oct):** Team tested branch models, issue templates, and CI gates.
+- [x] **Backlog Final Lock (19th Oct):** Sprint 1 Backlog formally locked with 13 issues ready for execution.
 
 ---
 
@@ -88,27 +88,29 @@ The project is governed by a 2-Part evaluation structure:
 **Sprint Goal:** Produce a working end-to-end product (compress a file, decompress it, prove 100% byte-identical restoration) with automated CI and record a 1-minute video demo.
 
 #### Saatwik Tasks (UC-01 & Architecture):
-- [ ] Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) and unit tests.
-- [ ] Implement `HuffmanTree` builder & canonical code generator (`src/compression/huffman_tree.cpp`).
-- [ ] Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract.
-- [ ] Implement `Encoder` module (`src/compression/encoder.cpp`).
-- [ ] Raise PR from `feature/saatwik-compression` with automated unit tests.
+- [x] **Issue #21:** Implement file input path reading, validation & permissions check (`JACK-F-001`).
+- [x] **Issue #18:** Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) & `HuffmanTree` builder (`src/compression/huffman_tree.cpp`) (`JACK-F-002`, `JACK-F-003`).
+- [ ] **Issue #19:** Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract (`JACK-F-003`).
+- [ ] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
+- [ ] Raise PR from `feature/saatwik-compression` with passing automated unit tests.
 
 #### Tanmayi Tasks (UC-02 & Testing):
-- [ ] Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding.
-- [ ] Implement `Decoder` module (`src/decompression/decoder.cpp`) for Huffman tree decoding.
-- [ ] Scaffold unit tests in `tests/unit/test_bit_reader.cpp` and `test_decoder.cpp`.
+- [ ] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`).
+- [ ] **Issue #30:** Implement Huffman tree reconstruction from archive metadata (`JACK-F-006`).
+- [ ] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`).
+- [ ] **Issue #32:** Implement `Decoder` module (`src/decompression/decoder.cpp`) for byte-identical file restoration (`JACK-F-008`).
 - [ ] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
 - [ ] Raise PR from `feature/tanmayi-decompression`.
 
 #### Yuvraj Tasks (Archive IO & CI/CD):
-- [ ] Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization.
-- [ ] Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization.
-- [ ] Ensure GitHub Actions CI automates build and CTest execution on every PR.
+- [ ] **Issue #23:** Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization (`JACK-F-004`).
+- [ ] **Issue #24:** Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization (`JACK-F-005`).
+- [ ] **Issue #25:** Ensure GitHub Actions CI automates build and CTest execution on every PR.
 - [ ] Raise PR from `feature/yuvraj-statistics`.
 
 #### Vibhav Tasks (Security Core):
-- [ ] Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
+- [ ] **Issue #35:** Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
+- [ ] **Issue #36:** Integrate CRC-32 calculation into compression pipeline and verify header checksums.
 - [ ] Add unit tests verifying known CRC-32 test vectors (`tests/unit/test_crc32.cpp`).
 - [ ] Raise PR from `feature/vibhav-integrity`.
 
