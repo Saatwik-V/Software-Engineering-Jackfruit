@@ -1,0 +1,53 @@
+name: Delete Merged Branch
+
+'on':
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-branch:
+    name: Delete Source Branch
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Delete remote branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+          SOURCE_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          echo "Evaluating branch deletion for head ref: '${SOURCE_BRANCH}'"
+
+          # Safeguard 1: Do not attempt to delete branches in forks
+          if [ "${IS_FORK}" = "true" ]; then
+            echo "Pull request originated from a fork (${{ github.event.pull_request.head.repo.full_name }}). Skipping deletion."
+            exit 0
+          fi
+
+          # Safeguard 2: Never delete the main branch
+          if [ "${SOURCE_BRANCH}" = "main" ]; then
+            echo "Source branch is 'main'. Skipping deletion to protect main branch."
+            exit 0
+          fi
+
+          # Safeguard 3: Prevent empty or whitespace branch names
+          if [ -z "${SOURCE_BRANCH}" ]; then
+            echo "Source branch name is empty. Skipping deletion."
+            exit 0
+          fi
+
+          echo "Deleting remote branch '${SOURCE_BRANCH}' from repository '${{ github.repository }}'..."
+          
+          # Delete branch ref via GitHub REST API using the preinstalled gh CLI tool.
+          # If the branch does not exist or was already deleted (e.g. via GitHub UI button),
+          # handle gracefully without failing the workflow.
+          if gh api --method DELETE "repos/${{ github.repository }}/git/refs/heads/${SOURCE_BRANCH}" --silent 2>/dev/null; then
+            echo "Successfully deleted remote branch '${SOURCE_BRANCH}'."
+          else
+            echo "Notice: Remote branch '${SOURCE_BRANCH}' could not be deleted (it may have already been deleted or does not exist). Exiting cleanly."
+            exit 0
+          fi

@@ -243,6 +243,12 @@ if __name__ == "__main__":
             "Jackfruit Archive Binary Format Specification (.jack)",
             "Binary Layout, Endianness, Metadata Dictionary & Bitstream Specification"
         ),
+        (
+            "docs/validation/test-plan-v0.1.md",
+            "docs/validation/test-plan-v0.1.pdf",
+            "Software Test Plan (STP) — IEEE 829",
+            "Jackfruit — Comprehensive Verification Strategy & Baseline Test Suite"
+        ),
     ]
 
     for md, pdf, title, sub in docs:

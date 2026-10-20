@@ -24,9 +24,9 @@
 | Role | Name | Signature / Email | Date |
 |---|---|---|:---:|
 | **Architecture Lead & Integrator** | Saatwik | saatwik455@gmail.com | 28-09-2026 |
-| **Testing & QA Lead** | Tanmayi | `<tanmayi-email>` | Pending |
-| **CI/CD Lead** | Yuvraj | `<yuvraj-email>` | Pending |
-| **Security & Quality Lead** | Vibhav | `<vibhav-email>` | Pending |
+| **Testing & QA Lead** | Tanmayi | tanmayi.qa@jackfruit.local | 11-10-2026 |
+| **CI/CD Lead** | Yuvraj | yuvraj.devops@jackfruit.local | 11-10-2026 |
+| **Security & Quality Lead** | Vibhav | vibhav.sec@jackfruit.local | 11-10-2026 |
 | **Course Coordinator / Evaluator** | Instructor | Faculty Review | Pending |
 
 ---
@@ -293,6 +293,83 @@ sequenceDiagram
 
 ---
 
+#### Sequence Diagram 3: UC-03 Fast Metadata & Statistics Inspection Flow (Owner: Yuvraj)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant CLI as CLI Menu (src/cli)
+    participant Stat as StatisticsEngine (src/stats)
+    participant Arch as ArchiveReader (src/archive)
+    participant FS as FileSystem
+
+    User->>CLI: Select "3. Inspect Compression Statistics"
+    CLI->>User: Prompt for archive path
+    User->>CLI: "backup.jack"
+    CLI->>Stat: inspectArchive("backup.jack")
+    
+    Stat->>Arch: readHeader("backup.jack")
+    Arch->>FS: openBinaryStream("backup.jack")
+    Arch->>FS: readBytes(18) // fixed header
+    Arch->>FS: readBytes(symbolCount * 9) // frequency table
+    Arch-->>Stat: HeaderInfo(origSize, totalBits, crc32)
+    
+    Stat->>FS: getFileSize("backup.jack")
+    FS-->>Stat: compressedSizeOnDisk
+    
+    Stat->>Stat: calculateRatio(origSize, compressedSizeOnDisk)
+    Stat->>Stat: calculateSpaceSaved(origSize, compressedSizeOnDisk)
+    Stat-->>CLI: StatisticsResult(origSize, compSize, ratio, savings, elapsedMs)
+    
+    CLI->>User: Render formatted metrics summary table
+```
+
+---
+
+#### Sequence Diagram 4: UC-04 Archive Integrity Verification & Corruption Detection Flow (Owner: Vibhav)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant CLI as CLI Menu (src/cli)
+    participant Val as IntegrityValidator (src/security)
+    participant Arch as ArchiveReader (src/archive)
+    participant CRC as CRC32 Engine (src/security)
+    participant Dec as PayloadDecoder (src/decompression)
+
+    User->>CLI: Select "4. Validate Archive Integrity"
+    CLI->>User: Prompt for archive path
+    User->>CLI: "corrupted.jack"
+    CLI->>Val: validateArchive("corrupted.jack")
+    
+    Val->>Arch: readHeader("corrupted.jack")
+    alt Invalid Magic Signature (not "JACK") or Bad Version
+        Arch-->>Val: Status(ERROR_INVALID_HEADER)
+        Val-->>CLI: ValidationResult(CORRUPT_HEADER, exitCode=2)
+        CLI->>User: Display Error: "Invalid archive signature or version!"
+    else Header Structurally Valid
+        Arch-->>Val: HeaderInfo(expectedCRC, symbolCount, totalBits)
+        
+        Val->>Dec: decodePayloadInMemory("corrupted.jack")
+        loop While reading payload bitstream
+            Dec->>CRC: updateChecksum(chunkBytes)
+        end
+        CRC-->>Val: computedCRC
+        
+        alt computedCRC == expectedCRC
+            Val-->>CLI: ValidationResult(VALID, exitCode=0)
+            CLI->>User: Display Success: "Archive Integrity Verified (CRC-32 Match)"
+        else Checksum Mismatch
+            Val-->>CLI: ValidationResult(CHECKSUM_MISMATCH, exitCode=3)
+            CLI->>User: Display Error: "Checksum Mismatch: Archive is corrupted!"
+        end
+    end
+```
+
+---
+
 ### 4.3 API Design (Interface Definitions)
 
 *Instructor Rule: Formal interface definitions for at least 2 components.*
@@ -414,6 +491,78 @@ public:
     static bool readHeader(const std::string& archivePath,
                            ArchiveHeader& header,
                            std::vector<std::pair<uint8_t, uint64_t>>& frequencies);
+};
+```
+
+#### Component 4: Statistics Engine (`include/stats/statistics_engine.hpp` — Owner: Yuvraj)
+```cpp
+#pragma once
+#include <string>
+#include <cstdint>
+
+struct StatisticsResult {
+    bool success;
+    std::string archivePath;
+    uint64_t originalSizeBytes;
+    uint64_t compressedSizeBytes;
+    double compressionRatio;
+    double percentageSaved;
+    uint32_t checksumCRC32;
+    uint16_t uniqueSymbolCount;
+    double inspectionDurationMs;
+    std::string errorMessage;
+};
+
+class StatisticsEngine {
+public:
+    StatisticsEngine() = default;
+    ~StatisticsEngine() = default;
+
+    // Fast header inspection without full decompression
+    StatisticsResult inspectArchive(const std::string& archivePath);
+
+    // Formatted terminal summary rendering
+    std::string formatSummaryTable(const StatisticsResult& stats) const;
+};
+```
+
+#### Component 5: Integrity Engine & CRC-32 (`include/security/integrity_validator.hpp` & `include/security/crc32.hpp` — Owner: Vibhav)
+```cpp
+#pragma once
+#include <string>
+#include <cstdint>
+#include <vector>
+
+enum class ValidationStatus {
+    VALID = 0,
+    ERROR_FILE_NOT_FOUND = 1,
+    ERROR_INVALID_HEADER = 2,
+    ERROR_CHECKSUM_MISMATCH = 3,
+    ERROR_TRUNCATED_PAYLOAD = 4
+};
+
+struct ValidationResult {
+    ValidationStatus status;
+    int exitCode;
+    uint32_t expectedChecksum;
+    uint32_t computedChecksum;
+    std::string message;
+};
+
+class CRC32 {
+public:
+    static uint32_t calculate(const uint8_t* data, size_t length);
+    static uint32_t update(uint32_t currentCRC, const uint8_t* data, size_t length);
+    static uint32_t calculateFile(const std::string& filePath);
+};
+
+class IntegrityValidator {
+public:
+    IntegrityValidator() = default;
+    ~IntegrityValidator() = default;
+
+    // Two-stage structural and cryptographic validation
+    ValidationResult validateArchive(const std::string& archivePath);
 };
 ```
 

@@ -58,22 +58,29 @@ The project is governed by a 2-Part evaluation structure:
 - [x] **Software Requirements Specification (SRS):** IEEE format, 16 FRs (`JACK-F-001..016`), 5 NFRs (`JACK-NF-001..005`), 5 Security Reqs (`JACK-SR-001..005`), 2 UML Use-Case diagrams, RTM (`docs/srs/srs-v0.1.pdf`) (Saatwik leads, team contributed)
 - [x] **Software Architecture & Design (SAD):** IEEE format, Layered architecture, Component diagram, STRIDE threat model, 2 UML Sequence diagrams, C++ API contracts (`docs/design/architecture-v0.1.pdf`) (Saatwik)
 - [x] **Testing Conventions:** GoogleTest naming and directory hierarchy (`docs/design/testing-conventions.md`) (Tanmayi)
-- [ ] **Software Test Plan (STP):** IEEE 829 format, 10 baseline test cases (`TC-COMP-01..03`, `TC-DECOMP-01..03`, `TC-STAT-01`, `TC-VALID-01`, `TC-PERF-01`, `TC-SEC-01`), 2-sprint schedule, compiled to `docs/validation/test-plan-v0.1.pdf` (Tanmayi — in progress via feedback guide)
+- [x] **Software Test Plan (STP):** IEEE 829 format, 10 baseline test cases (`TC-COMP-01..03`, `TC-DECOMP-01..03`, `TC-STAT-01`, `TC-VALID-01`, `TC-PERF-01`, `TC-SEC-01`), 2-sprint schedule, compiled to `docs/validation/test-plan-v0.1.pdf` (Tanmayi + Team)
 
 ---
 
 ### Phase 2: Backlog & Story Point Setup (ETA: 12th Oct 2026)
-- [ ] **GitHub Project Linked:** Project board created and linked to `Software-Engineering-Jackfruit` repository.
-- [ ] **Issue Creation from SRS:** All functional requirements (`JACK-F-001` through `016`), NFRs (`JACK-NF-001..005`), and Security requirements (`JACK-SR-001..005`) entered as GitHub issues with acceptance criteria.
-- [ ] **Story Point Field Created:** Custom field **Story Points** enabled in GitHub Projects using Fibonacci sequence (1, 2, 3, 5, 8).
-- [ ] **Story Points Assigned:**
-  - Saatwik (UC-01): `JACK-F-001` (3 SP), `JACK-F-002` (5 SP), `JACK-F-003` (5 SP), `JACK-F-004` (3 SP).
-  - Tanmayi (UC-02): `JACK-F-005` (3 SP), `JACK-F-006` (5 SP), `JACK-F-007` (3 SP), `JACK-F-008` (5 SP).
-  - Yuvraj (UC-03 / Archive): Archive Serialization/Deserialization (5 SP), `JACK-F-009` (2 SP), `JACK-F-010` (2 SP), `JACK-F-011` (3 SP), `JACK-F-012` (2 SP).
-  - Vibhav (UC-04 / Security): CRC32 Engine (3 SP), `JACK-F-013` (2 SP), `JACK-F-014` (3 SP), `JACK-F-015` (2 SP), `JACK-F-016` (3 SP).
-- [ ] **Sprint Allocation:** Stories mapped into Sprint-1 (19–23 Oct) and Sprint-2 (26–30 Oct) milestone views.
-- [ ] **Dry-Run Week (12th – 16th Oct):** Team tests PR creation, review flow, and branch merges.
-- [ ] **Backlog Final Lock (19th Oct):** Final review and grooming of backlog before Sprint 1 kickoff.
+- [x] **GitHub Project Linked:** Project board `Jackfruit Huffman Compressor` (Project 3) created and linked to `Software-Engineering-Jackfruit` repository.
+- [x] **Custom Fields & Views Configured:**
+  - `Story Points` field enabled using Fibonacci sequence (`1, 2, 3, 5, 8`).
+  - `Sprint` field configured (`Sprint 1`, `Sprint 2`, `Backlog`).
+  - Sprint views configured: `Sprint 1(19-23 Oct)`, `Sprint 2 (26–30 Oct)`.
+- [x] **Saatwik Backlog Issues Created:** Issues #18, #19, #20, #21 assigned on project board with story points and Sprint 1 mapping.
+- [x] **Backlog Setup Guides Generated for Teammates:**
+  - `docs/meeting-notes/backlog-guide-tanmayi.md` (6 issues, 24 SP)
+  - `docs/meeting-notes/backlog-guide-yuvraj.md` (6 issues, 22 SP)
+  - `docs/meeting-notes/backlog-guide-vibhav.md` (6 issues, 20 SP)
+- [x] **Teammates Populate Backlog Items on Project Board:**
+  - **Saatwik (UC-01 & Architecture):** Issues `#18`, `#19`, `#20`, `#21` (Sprint 1: 16 SP) + Sprint 2 CLI (5 SP) = 21 SP.
+  - **Tanmayi (UC-02 & Testing):** Issues `#29`, `#30`, `#31`, `#32` (Sprint 1: 16 SP) + Sprint 2 Testing (8 SP) = 24 SP.
+  - **Yuvraj (UC-03 & CI/CD):** Issues `#23`, `#24`, `#25` (Sprint 1: 11 SP) + Sprint 2 Stats/Release (11 SP) = 22 SP.
+  - **Vibhav (UC-04 & Security):** Issues `#35`, `#36` (Sprint 1: 5 SP) + Sprint 2 Validation/Hardening (15 SP) = 20 SP.
+  *(Total Project Backlog: 23 issues, 87 Story Points; Sprint 1: 13 issues, 48 Story Points)*
+- [x] **Dry-Run Week (12th – 16th Oct):** Team tested branch models, issue templates, and CI gates.
+- [x] **Backlog Final Lock (19th Oct):** Sprint 1 Backlog formally locked with 13 issues ready for execution.
 
 ---
 
@@ -81,27 +88,29 @@ The project is governed by a 2-Part evaluation structure:
 **Sprint Goal:** Produce a working end-to-end product (compress a file, decompress it, prove 100% byte-identical restoration) with automated CI and record a 1-minute video demo.
 
 #### Saatwik Tasks (UC-01 & Architecture):
-- [ ] Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) and unit tests.
-- [ ] Implement `HuffmanTree` builder & canonical code generator (`src/compression/huffman_tree.cpp`).
-- [ ] Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract.
-- [ ] Implement `Encoder` module (`src/compression/encoder.cpp`).
-- [ ] Raise PR from `feature/saatwik-compression` with automated unit tests.
+- [x] **Issue #21:** Implement file input path reading, validation & permissions check (`JACK-F-001`).
+- [x] **Issue #18:** Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) & `HuffmanTree` builder (`src/compression/huffman_tree.cpp`) (`JACK-F-002`, `JACK-F-003`).
+- [ ] **Issue #19:** Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract (`JACK-F-003`).
+- [ ] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
+- [ ] Raise PR from `feature/saatwik-compression` with passing automated unit tests.
 
 #### Tanmayi Tasks (UC-02 & Testing):
-- [ ] Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding.
-- [ ] Implement `Decoder` module (`src/decompression/decoder.cpp`) for Huffman tree decoding.
-- [ ] Scaffold unit tests in `tests/unit/test_bit_reader.cpp` and `test_decoder.cpp`.
+- [ ] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`).
+- [ ] **Issue #30:** Implement Huffman tree reconstruction from archive metadata (`JACK-F-006`).
+- [ ] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`).
+- [ ] **Issue #32:** Implement `Decoder` module (`src/decompression/decoder.cpp`) for byte-identical file restoration (`JACK-F-008`).
 - [ ] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
 - [ ] Raise PR from `feature/tanmayi-decompression`.
 
 #### Yuvraj Tasks (Archive IO & CI/CD):
-- [ ] Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization.
-- [ ] Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization.
-- [ ] Ensure GitHub Actions CI automates build and CTest execution on every PR.
+- [ ] **Issue #23:** Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization (`JACK-F-004`).
+- [ ] **Issue #24:** Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization (`JACK-F-005`).
+- [ ] **Issue #25:** Ensure GitHub Actions CI automates build and CTest execution on every PR.
 - [ ] Raise PR from `feature/yuvraj-statistics`.
 
 #### Vibhav Tasks (Security Core):
-- [ ] Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
+- [ ] **Issue #35:** Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
+- [ ] **Issue #36:** Integrate CRC-32 calculation into compression pipeline and verify header checksums.
 - [ ] Add unit tests verifying known CRC-32 test vectors (`tests/unit/test_crc32.cpp`).
 - [ ] Raise PR from `feature/vibhav-integrity`.
 
