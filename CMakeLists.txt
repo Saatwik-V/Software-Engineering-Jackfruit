@@ -16,6 +16,7 @@ add_library(jackfruit_core STATIC
     src/io/bit_reader.cpp
     src/compression/frequency_table.cpp
     src/compression/huffman_tree.cpp
+    src/archive/archive.cpp
 )
 target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -43,6 +44,7 @@ if(BUILD_TESTING)
         tests/unit/test_frequency_table.cpp
         tests/unit/test_huffman_tree.cpp
         tests/unit/test_bit_reader.cpp
+        tests/unit/test_archive_io.cpp
     )
     target_link_libraries(jackfruit_tests PRIVATE jackfruit_core GTest::gtest_main)
 
