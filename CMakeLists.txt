@@ -13,6 +13,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Core library containing modular compression, io, archive, integrity components
 add_library(jackfruit_core STATIC
     src/io/file_validator.cpp
+    src/io/bit_reader.cpp
     src/compression/frequency_table.cpp
     src/compression/huffman_tree.cpp
 )
@@ -41,6 +42,7 @@ if(BUILD_TESTING)
         tests/unit/test_file_validator.cpp
         tests/unit/test_frequency_table.cpp
         tests/unit/test_huffman_tree.cpp
+        tests/unit/test_bit_reader.cpp
     )
     target_link_libraries(jackfruit_tests PRIVATE jackfruit_core GTest::gtest_main)
 
