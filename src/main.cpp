@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "compression/compressor.hpp"
+#include "decompression/decoder.hpp"
 
 namespace {
 
@@ -16,9 +17,11 @@ void printUsage(const char* progName) {
     std::cout << "Jackfruit — Lossless Huffman File Compressor (v0.1.0)\n\n"
               << "Usage:\n"
               << "  " << progName << " compress <input_file> [-o <output_archive>]\n"
+              << "  " << progName << " decompress <archive_file> [-o <output_file>]\n"
               << "  " << progName << " --help | -h\n\n"
               << "Commands:\n"
               << "  compress    Compress an input file into a .jack binary archive\n"
+              << "  decompress  Decompress a .jack binary archive back to original file\n"
               << "  --help, -h  Display this help message\n";
 }
 
@@ -70,6 +73,49 @@ int handleCompress(int argc, char* argv[]) {
     return 0;
 }
 
+int handleDecompress(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Error: 'decompress' requires an archive file path.\n";
+        printUsage(argv[0]);
+        return 1;
+    }
+
+    std::string archivePath = argv[2];
+    std::string outputPath = "restored.txt"; // Default fallback if -o not provided
+
+    // If input ends with .jack, default output strips it or names it restored_ + filename
+    if (archivePath.length() >= 5 && archivePath.substr(archivePath.length() - 5) == ".jack") {
+        outputPath = archivePath.substr(0, archivePath.length() - 5) + "_restored";
+    }
+
+    for (int i = 3; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "-o" || arg == "--output") {
+            if (i + 1 < argc) {
+                outputPath = argv[++i];
+            } else {
+                std::cerr << "Error: -o option requires an output path argument.\n";
+                return 1;
+            }
+        } else {
+            std::cerr << "Error: Unknown argument '" << arg << "'.\n";
+            return 1;
+        }
+    }
+
+    std::cout << "[*] Decompressing '" << archivePath << "' -> '" << outputPath << "'...\n";
+
+    bool success = jackfruit::decompression::Decoder::decompressFile(archivePath, outputPath);
+
+    if (!success) {
+        std::cerr << "[-] Decompression failed.\n";
+        return 1;
+    }
+
+    std::cout << "[+] Decompression successful! Restored to '" << outputPath << "'.\n";
+    return 0;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
@@ -88,6 +134,10 @@ int main(int argc, char* argv[]) {
 
     if (command == "compress") {
         return handleCompress(argc, argv);
+    }
+
+    if (command == "decompress") {
+        return handleDecompress(argc, argv);
     }
 
     std::cerr << "Error: Unknown command '" << command << "'.\n";
