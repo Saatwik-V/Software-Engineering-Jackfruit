@@ -1,4 +1,6 @@
 #include "archive/archive.hpp"
+#include "archive/archive_validation.hpp"
+#include <filesystem>
 #include <fstream>
 #include <cstring>
 #include <stdexcept>
@@ -103,4 +105,16 @@ bool ArchiveReader::readHeader(const std::string& archivePath,
     }
 
     return true;
+}
+
+void ArchiveReader::readValidatedHeader(const std::string& archivePath,
+                                        ArchiveHeader& header,
+                                        std::vector<std::pair<uint8_t, uint64_t>>& frequencies) {
+    readHeader(archivePath, header, frequencies);
+
+    std::error_code ec;
+    const uint64_t fileSize = std::filesystem::file_size(archivePath, ec);
+    if (ec || !validateArchiveStructure(header, frequencies, fileSize)) {
+        throw ERROR_INVALID_HEADER;
+    }
 }

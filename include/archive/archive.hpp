@@ -24,4 +24,11 @@ public:
     static bool readHeader(const std::string& archivePath,
                            ArchiveHeader& header,
                            std::vector<std::pair<uint8_t, uint64_t>>& frequencies);
+
+    // readHeader() plus the full structural checks from archive-format.md Section 6
+    // (flag consistency, symbol-table consistency, exact file length).
+    // Throws ERROR_INVALID_HEADER on any violation. Does not read the payload.
+    static void readValidatedHeader(const std::string& archivePath,
+                                    ArchiveHeader& header,
+                                    std::vector<std::pair<uint8_t, uint64_t>>& frequencies);
 };
