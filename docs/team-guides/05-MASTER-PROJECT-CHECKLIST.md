@@ -90,17 +90,17 @@ The project is governed by a 2-Part evaluation structure:
 #### Saatwik Tasks (UC-01 & Architecture):
 - [x] **Issue #21:** Implement file input path reading, validation & permissions check (`JACK-F-001`).
 - [x] **Issue #18:** Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) & `HuffmanTree` builder (`src/compression/huffman_tree.cpp`) (`JACK-F-002`, `JACK-F-003`).
-- [ ] **Issue #19:** Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract (`JACK-F-003`).
-- [ ] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
-- [ ] Raise PR from `feature/saatwik-compression` with passing automated unit tests.
+- [x] **Issue #19:** Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract (`JACK-F-003`).
+- [ ] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) [Core Encoder Complete] & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
+- [ ] Raise PR from `feat/saatwik-bitwriter` with passing automated unit tests.
 
 #### Tanmayi Tasks (UC-02 & Testing):
-- [ ] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`).
+- [x] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`) [Merged to main].
 - [ ] **Issue #30:** Implement Huffman tree reconstruction from archive metadata (`JACK-F-006`).
-- [ ] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`).
+- [x] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`) [Merged to main].
 - [ ] **Issue #32:** Implement `Decoder` module (`src/decompression/decoder.cpp`) for byte-identical file restoration (`JACK-F-008`).
 - [ ] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
-- [ ] Raise PR from `feature/tanmayi-decompression`.
+- [ ] Raise PR for remaining decompression tasks.
 
 #### Yuvraj Tasks (Archive IO & CI/CD):
 - [ ] **Issue #23:** Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization (`JACK-F-004`).
