@@ -1,6 +1,96 @@
-#include <iostream>
+/**
+ * @file main.cpp
+ * @brief Entry point for the Jackfruit Huffman file compressor CLI.
+ */
 
-int main() {
-    std::cout << "Jackfruit compressor" << std::endl;
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "compression/compressor.hpp"
+
+namespace {
+
+void printUsage(const char* progName) {
+    std::cout << "Jackfruit — Lossless Huffman File Compressor (v0.1.0)\n\n"
+              << "Usage:\n"
+              << "  " << progName << " compress <input_file> [-o <output_archive>]\n"
+              << "  " << progName << " --help | -h\n\n"
+              << "Commands:\n"
+              << "  compress    Compress an input file into a .jack binary archive\n"
+              << "  --help, -h  Display this help message\n";
+}
+
+int handleCompress(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Error: 'compress' requires an input file path.\n";
+        printUsage(argv[0]);
+        return 1;
+    }
+
+    std::string inputPath = argv[2];
+    std::string outputPath = inputPath + ".jack";
+
+    for (int i = 3; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "-o" || arg == "--output") {
+            if (i + 1 < argc) {
+                outputPath = argv[++i];
+            } else {
+                std::cerr << "Error: -o option requires an output path argument.\n";
+                return 1;
+            }
+        } else {
+            std::cerr << "Error: Unknown argument '" << arg << "'.\n";
+            return 1;
+        }
+    }
+
+    std::cout << "[*] Compressing '" << inputPath << "' -> '" << outputPath << "'...\n";
+
+    jackfruit::compression::Compressor compressor;
+    const auto result = compressor.compressFile(inputPath, outputPath);
+
+    if (result.status != jackfruit::compression::CompressionStatus::SUCCESS) {
+        std::cerr << "[-] Compression failed: " << result.errorMessage << "\n";
+        return 1;
+    }
+
+    std::cout << "[+] Compression successful!\n"
+              << "    Original size:    " << result.originalBytes << " bytes\n"
+              << "    Archive size:     " << result.compressedBytes << " bytes\n"
+              << "    Checksum (CRC32): 0x" << std::hex << std::uppercase << std::setfill('0')
+              << std::setw(8) << result.checksumCRC32 << std::dec << "\n"
+              << "    Compression ratio:" << std::fixed << std::setprecision(2)
+              << " " << result.compressionRatio << "x\n"
+              << "    Space saved:      " << result.percentageSaved << "%\n"
+              << "    Elapsed time:     " << result.executionTimeMs << " ms\n";
+
     return 0;
+}
+
+} // namespace
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cout << "Jackfruit compressor\n";
+        printUsage(argv[0]);
+        return 0;
+    }
+
+    const std::string command = argv[1];
+
+    if (command == "-h" || command == "--help") {
+        printUsage(argv[0]);
+        return 0;
+    }
+
+    if (command == "compress") {
+        return handleCompress(argc, argv);
+    }
+
+    std::cerr << "Error: Unknown command '" << command << "'.\n";
+    printUsage(argv[0]);
+    return 1;
 }

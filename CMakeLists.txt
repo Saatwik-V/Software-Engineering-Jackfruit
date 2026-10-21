@@ -18,6 +18,7 @@ add_library(jackfruit_core STATIC
     src/compression/frequency_table.cpp
     src/compression/huffman_tree.cpp
     src/compression/encoder.cpp
+    src/compression/compressor.cpp
     src/archive/archive.cpp
     src/security/crc32.cpp
     src/archive/archive_validation.cpp
@@ -51,6 +52,7 @@ if(BUILD_TESTING)
         tests/unit/test_bit_reader.cpp
         tests/unit/test_bit_writer.cpp
         tests/unit/test_encoder.cpp
+        tests/unit/test_compressor.cpp
         tests/unit/test_archive_io.cpp
         tests/unit/test_crc32.cpp
         tests/unit/test_archive_writer.cpp
