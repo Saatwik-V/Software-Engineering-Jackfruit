@@ -68,3 +68,4 @@ junit.xml
 # SonarCloud scanner cache
 .scannerwork/
 .sonar/
+build-ucrt64*/
