@@ -91,34 +91,34 @@ The project is governed by a 2-Part evaluation structure:
 - [x] **Issue #21:** Implement file input path reading, validation & permissions check (`JACK-F-001`).
 - [x] **Issue #18:** Implement `FrequencyTable` (`src/compression/frequency_table.cpp`) & `HuffmanTree` builder (`src/compression/huffman_tree.cpp`) (`JACK-F-002`, `JACK-F-003`).
 - [x] **Issue #19:** Implement `BitWriter` (`src/io/bit_writer.cpp`) following MSB-first packing contract (`JACK-F-003`).
-- [ ] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) [Core Encoder Complete] & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
-- [ ] Raise PR from `feat/saatwik-bitwriter` with passing automated unit tests.
+- [x] **Issue #20:** Implement `Encoder` module (`src/compression/encoder.cpp`) & integrate with Yuvraj's `ArchiveWriter` (`JACK-F-004`).
+- [x] Raise PR from `feat/saatwik-compressor` with passing automated unit tests [Merged in PR #46].
 
 #### Tanmayi Tasks (UC-02 & Testing):
-- [x] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`) [Merged to main].
-- [ ] **Issue #30:** Implement Huffman tree reconstruction from archive metadata (`JACK-F-006`).
-- [x] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`) [Merged to main].
-- [ ] **Issue #32:** Implement `Decoder` module (`src/decompression/decoder.cpp`) for byte-identical file restoration (`JACK-F-008`).
-- [ ] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
-- [ ] Raise PR for remaining decompression tasks.
+- [x] **Issue #29:** Implement archive header parsing & validation (`JACK-F-005`, `JACK-SR-001`) [Merged in PR #42].
+- [x] **Issue #30:** Implement Huffman tree reconstruction from archive metadata (`JACK-F-006`) [Merged in PR #48].
+- [x] **Issue #31:** Implement `BitReader` (`src/io/bit_reader.cpp`) handling bit-boundary padding (`JACK-F-007`) [Merged in PR #42].
+- [x] **Issue #32:** Implement `Decoder` module (`src/decompression/decoder.cpp`) for byte-identical file restoration (`JACK-F-008`) [Merged in PR #48].
+- [x] Pair with Saatwik to verify **byte-identical round-trip restoration** (`cmp file output`).
+- [x] Raise PR for remaining decompression tasks [Merged in PR #48].
 
 #### Yuvraj Tasks (Archive IO & CI/CD):
-- [ ] **Issue #23:** Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization (`JACK-F-004`).
-- [ ] **Issue #24:** Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization (`JACK-F-005`).
-- [ ] **Issue #25:** Ensure GitHub Actions CI automates build and CTest execution on every PR.
-- [ ] Raise PR from `feature/yuvraj-statistics`.
+- [x] **Issue #23:** Implement `ArchiveWriter` (`src/archive/archive_writer.cpp`) for 18-byte header & metadata serialization (`JACK-F-004`) [Merged in PR #43].
+- [x] **Issue #24:** Implement `ArchiveReader` (`src/archive/archive_reader.cpp`) for header validation & deserialization (`JACK-F-005`) [Merged in PR #43].
+- [x] **Issue #25:** Ensure GitHub Actions CI automates build and CTest execution on every PR [Merged in PR #43].
+- [x] Raise PR from `feature/yuvraj-statistics` [Merged in PR #43].
 
 #### Vibhav Tasks (Security Core):
-- [ ] **Issue #35:** Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`).
-- [ ] **Issue #36:** Integrate CRC-32 calculation into compression pipeline and verify header checksums.
-- [ ] Add unit tests verifying known CRC-32 test vectors (`tests/unit/test_crc32.cpp`).
-- [ ] Raise PR from `feature/vibhav-integrity`.
+- [x] **Issue #35:** Implement standalone `CRC32` calculation (`src/security/crc32.cpp`) with standard IEEE 802.3 polynomial (`0xEDB88320`) [Merged in PR #45].
+- [x] **Issue #36:** Integrate CRC-32 calculation into compression pipeline and verify header checksums [Merged in PR #47].
+- [x] Add unit tests verifying known CRC-32 test vectors (`tests/unit/test_crc32.cpp`) [Merged in PR #45 & #47].
+- [x] Raise PR from `feature/vibhav-crc-verify` [Merged in PR #47].
 
 #### Sprint 1 Milestone Deliverables:
-- [ ] All 4 Sprint 1 PRs reviewed and merged into `main`.
-- [ ] CLI command `jackfruit compress input.txt -o out.jack` and `jackfruit decompress out.jack -o restored.txt` working end-to-end.
-- [ ] `diff input.txt restored.txt` returns zero differences.
-- [ ] **Record 1-Minute Video Demo:** Demonstrate build, CLI compression, CLI decompression, and `cmp` verification. Upload video to `docs/media/sprint-1-demo.mp4` (or linked per course guidelines).
+- [x] All 4 Sprint 1 PRs reviewed and merged into `main`.
+- [x] CLI command `jackfruit compress input.txt -o out.jack` and `jackfruit decompress out.jack -o restored.txt` working end-to-end.
+- [x] `diff input.txt restored.txt` returns zero differences.
+- [x] **Record 1-Minute Video Demo:** Demonstrate build, CLI compression, CLI decompression, and `cmp` verification. Upload video to `docs/media/sprint-1-demo.mp4` (or linked per course guidelines).
 
 ---
 
