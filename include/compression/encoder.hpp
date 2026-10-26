@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "compression/huffman_tree.hpp"
+#include "huffman_tree.hpp"
 #include "io/bit_writer.hpp"
 #include <cstdint>
 #include <istream>

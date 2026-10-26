@@ -25,6 +25,7 @@ add_library(jackfruit_core STATIC
     src/archive/archive_validation.cpp
     src/archive/archive_writer.cpp
     src/decompression/decoder.cpp
+    src/cli/menu.cpp
 )
 target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -65,6 +66,7 @@ if(BUILD_TESTING)
         tests/unit/test_archive_io.cpp
         tests/unit/test_crc32.cpp
         tests/unit/test_archive_writer.cpp
+        tests/unit/test_menu.cpp
     )
     target_link_libraries(jackfruit_tests PRIVATE jackfruit_core GTest::gtest_main)
 
