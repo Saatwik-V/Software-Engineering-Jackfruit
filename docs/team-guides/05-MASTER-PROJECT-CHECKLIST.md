@@ -126,8 +126,8 @@ The project is governed by a 2-Part evaluation structure:
 **Sprint Goal:** Complete all 4 use cases, interactive CLI menu, coverage enforcement (≥80%), SonarCloud analysis, security hardening, final 2-minute video demo, and freeze development.
 
 #### Saatwik Tasks (CLI & Performance):
-- [ ] Build interactive CLI terminal navigation menu (`src/cli/menu.cpp`).
-- [ ] Measure and record performance benchmark against 5MB dataset (`JACK-NF-001`).
+- [x] Build interactive CLI terminal navigation menu (`src/cli/menu.cpp`).
+- [x] Measure and record performance benchmark against 5MB dataset (`JACK-NF-001`).
 - [ ] Integrate all 4 module flows into unified `jackfruit` executable.
 - [ ] Final architecture and RTM reconciliation.
 

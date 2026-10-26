@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "cli/menu.hpp"
 #include "compression/compressor.hpp"
 #include "decompression/decoder.hpp"
 
@@ -16,12 +17,15 @@ namespace {
 void printUsage(const char* progName) {
     std::cout << "Jackfruit — Lossless Huffman File Compressor (v0.1.0)\n\n"
               << "Usage:\n"
-              << "  " << progName << " compress <input_file> [-o <output_archive>]\n"
-              << "  " << progName << " decompress <archive_file> [-o <output_file>]\n"
-              << "  " << progName << " --help | -h\n\n"
+              << "  " << progName << "                           Launch interactive terminal menu\n"
+              << "  " << progName << " --menu | -m               Launch interactive terminal menu\n"
+              << "  " << progName << " compress <in> [-o <out>]   Compress an input file into .jack archive\n"
+              << "  " << progName << " decompress <in> [-o <out>] Decompress a .jack archive\n"
+              << "  " << progName << " --help | -h               Display this help message\n\n"
               << "Commands:\n"
               << "  compress    Compress an input file into a .jack binary archive\n"
               << "  decompress  Decompress a .jack binary archive back to original file\n"
+              << "  menu        Launch the interactive numbered CLI navigation menu\n"
               << "  --help, -h  Display this help message\n";
 }
 
@@ -120,8 +124,8 @@ int handleDecompress(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cout << "Jackfruit compressor\n";
-        printUsage(argv[0]);
+        jackfruit::cli::Menu menu;
+        menu.run(std::cin, std::cout);
         return 0;
     }
 
@@ -129,6 +133,12 @@ int main(int argc, char* argv[]) {
 
     if (command == "-h" || command == "--help") {
         printUsage(argv[0]);
+        return 0;
+    }
+
+    if (command == "-m" || command == "--menu" || command == "menu") {
+        jackfruit::cli::Menu menu;
+        menu.run(std::cin, std::cout);
         return 0;
     }
 

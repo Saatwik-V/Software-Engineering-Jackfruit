@@ -49,6 +49,7 @@ _deps/
 # IDE & Editor files
 .vscode/
 .idea/
+.clangd
 *.sublime-project
 *.sublime-workspace
 *.swp
@@ -69,3 +70,4 @@ junit.xml
 .scannerwork/
 .sonar/
 build-ucrt64*/
+.cache/
