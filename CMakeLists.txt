@@ -54,7 +54,7 @@ if(BUILD_TESTING)
         target_compile_options(gtest_main PRIVATE -Wno-error=cpp -Wno-error)
     endif()
 
-    # Unit test executable
+    # Test executable (Unit, Integration, and System E2E)
     add_executable(jackfruit_tests
         tests/unit/test_placeholder.cpp
         tests/unit/test_file_validator.cpp
@@ -69,6 +69,8 @@ if(BUILD_TESTING)
         tests/unit/test_archive_writer.cpp
         tests/unit/test_menu.cpp
         tests/unit/test_integrity.cpp
+        tests/integration/test_roundtrip.cpp
+        tests/system/test_cli_e2e.cpp
     )
     target_link_libraries(jackfruit_tests PRIVATE jackfruit_core GTest::gtest_main)
 

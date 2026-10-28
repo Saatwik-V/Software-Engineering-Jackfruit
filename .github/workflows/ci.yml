@@ -42,11 +42,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Configure CMake (Release, warnings are errors)
-        run: >
-          cmake -B build
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror"
+      - name: Install lcov (GCC coverage)
+        if: matrix.compiler == 'g++'
+        run: sudo apt-get update && sudo apt-get install -y lcov
+
+      - name: Configure CMake (Release with Coverage for GCC)
+        run: |
+          if [ "${{ matrix.compiler }}" = "g++" ]; then
+            cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror --coverage"
+          else
+            cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror"
+          fi
 
       - name: Build project
         run: cmake --build build --parallel
@@ -55,3 +61,18 @@ jobs:
         run: ctest --test-dir build --output-on-failure
       # Tests run sequentially on purpose: several existing tests share temp files/dirs
       # and are not safe to run in parallel (see PR discussion).
+
+      - name: Generate Code Coverage Report (GCC)
+        if: matrix.compiler == 'g++'
+        run: |
+          lcov --capture --directory build --base-directory . --output-file build/coverage.info --ignore-errors inconsistent,gcov,unused
+          lcov --remove build/coverage.info '/usr/*' '*/tests/*' '*/_deps/*' --output-file build/coverage_filtered.info --ignore-errors unused,empty,inconsistent
+          lcov --list build/coverage_filtered.info
+          genhtml build/coverage_filtered.info --output-directory build/coverage_html --ignore-errors inconsistent,corrupt,empty
+
+      - name: Upload HTML Coverage Artifact
+        if: matrix.compiler == 'g++'
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: build/coverage_html
