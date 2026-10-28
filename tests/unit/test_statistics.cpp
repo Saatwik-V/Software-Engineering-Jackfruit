@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 
 // Helper: write a temp text file
 static std::string writeTempFile(const std::string& name, const std::string& content) {
-    const fs::path dir = fs::path("build") / "test_stats_tmp";
+    const fs::path dir = fs::path("build") / "test_stats_tmp"; // NOSONAR
     fs::create_directories(dir);
     const std::string path = (dir / name).string();
     std::ofstream f(path);
