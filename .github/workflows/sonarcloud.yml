@@ -50,7 +50,9 @@ jobs:
             --root . \
             --exclude 'tests/' \
             --exclude '_deps/' \
-            --exclude 'build/'
+            --exclude 'build/' \
+            --exclude-throw-branches \
+            --exclude-unreachable-branches
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
