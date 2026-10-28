@@ -7,6 +7,7 @@ project(jackfruit-huffman-compressor VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) 
 
 # Include directory structure
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -27,6 +28,7 @@ add_library(jackfruit_core STATIC
     src/decompression/decoder.cpp
     src/cli/menu.cpp
     src/security/integrity_validator.cpp
+    src/stats/statistics_engine.cpp 
 )
 target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -69,6 +71,7 @@ if(BUILD_TESTING)
         tests/unit/test_archive_writer.cpp
         tests/unit/test_menu.cpp
         tests/unit/test_integrity.cpp
+        tests/unit/test_statistics.cpp 
         tests/integration/test_roundtrip.cpp
         tests/system/test_cli_e2e.cpp
     )

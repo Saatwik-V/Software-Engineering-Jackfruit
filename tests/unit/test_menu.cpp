@@ -178,10 +178,10 @@ TEST_F(MenuTest, StatisticsValidArchiveDisplaysMetricsTable) {
     menu.run(in, out);
     const std::string output = out.str();
 
-    EXPECT_NE(output.find("Archive Summary & Statistics:"), std::string::npos);
-    EXPECT_NE(output.find("Original Data Size:"), std::string::npos);
-    EXPECT_NE(output.find("Compression Ratio:"), std::string::npos);
-    EXPECT_NE(output.find("Stored CRC-32:"), std::string::npos);
+    EXPECT_NE(output.find("Archive Statistics"), std::string::npos);
+    EXPECT_NE(output.find("Original Size"), std::string::npos);
+    EXPECT_NE(output.find("Compression Ratio"), std::string::npos);
+    EXPECT_NE(output.find("CRC-32 Checksum"), std::string::npos);
 }
 
 TEST_F(MenuTest, StatisticsMissingArchiveReturnsError) {

@@ -4,7 +4,7 @@
  */
 
 #include "cli/menu.hpp"
-
+#include "stats/statistics_engine.hpp"
 #include <chrono>
 #include <filesystem>
 #include <iomanip>
@@ -83,7 +83,6 @@ void Menu::run(std::istream& in, std::ostream& out) {
 
         std::string line;
         if (!std::getline(in, line)) {
-            // End-of-file reached on input stream
             break;
         }
 
@@ -266,37 +265,13 @@ void Menu::handleStatistics(std::istream& in, std::ostream& out) {
         return;
     }
 
-    ArchiveHeader header{};
-    std::vector<std::pair<uint8_t, uint64_t>> frequencies;
-    const bool readSuccess = ArchiveReader::readHeader(archivePath, header, frequencies);
-    if (!readSuccess) {
-        out << colorRed() << "[-] Error: Could not read valid header from '"
-            << archivePath << "'.\n" << colorReset();
-        return;
+    try {
+        const auto stats = stats::StatisticsEngine::computeStats(archivePath);
+        stats::StatisticsEngine::printStatsTable(stats, archivePath, out);
+    } catch (int errCode) {
+        out << colorRed() << "[-] Failed: invalid or corrupted .jack archive (error "
+            << errCode << ").\n" << colorReset();
     }
-
-    std::error_code ec;
-    const uint64_t diskSize = std::filesystem::file_size(archivePath, ec);
-    const double ratio = (diskSize > 0 && header.originalSize > 0)
-        ? static_cast<double>(header.originalSize) / static_cast<double>(diskSize)
-        : 0.0;
-    const double spaceSaved = (header.originalSize > 0 && diskSize <= header.originalSize)
-        ? (1.0 - static_cast<double>(diskSize) / static_cast<double>(header.originalSize)) * 100.0
-        : 0.0;
-
-    out << colorGreen() << colorBold() << "\nArchive Summary & Statistics:\n" << colorReset()
-        << "------------------------------------------------------------\n"
-        << "  Archive Path:       " << archivePath << "\n"
-        << "  Archive Size:       " << diskSize << " bytes\n"
-        << "  Original Data Size: " << header.originalSize << " bytes\n"
-        << "  Compression Ratio:  " << std::fixed << std::setprecision(2) << ratio << "x\n"
-        << "  Space Saved:        " << spaceSaved << "%\n"
-        << "  Stored CRC-32:      0x" << std::hex << std::uppercase << std::setfill('0')
-        << std::setw(8) << header.checksumCRC32 << std::dec << "\n"
-        << "  Unique Symbols:     " << header.symbolCount << "\n"
-        << "  Total Encoded Bits: " << header.totalBits << " bits\n"
-        << "  Format Version:     v" << static_cast<int>(header.version) << "\n"
-        << "------------------------------------------------------------\n";
 }
 
 void Menu::handleValidate(std::istream& in, std::ostream& out) {
