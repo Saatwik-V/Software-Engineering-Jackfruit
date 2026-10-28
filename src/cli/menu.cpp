@@ -17,6 +17,7 @@
 #include "compression/compressor.hpp"
 #include "decompression/decoder.hpp"
 #include "io/file_validator.hpp"
+#include "security/integrity_validator.hpp"
 
 namespace jackfruit::cli {
 
@@ -319,24 +320,30 @@ void Menu::handleValidate(std::istream& in, std::ostream& out) {
         return;
     }
 
-    ArchiveHeader header{};
-    std::vector<std::pair<uint8_t, uint64_t>> frequencies;
+    const auto result = security::IntegrityValidator::validateArchive(archivePath);
 
-    try {
-        ArchiveReader::readValidatedHeader(archivePath, header, frequencies);
-    } catch (...) {
-        out << colorRed() << "[-] Integrity Check: FAILED (Header structure or checksum invalid)\n" << colorReset();
+    if (result.status != security::ValidationStatus::VALID) {
+        out << colorRed() << colorBold()
+            << "[-] Integrity Check: FAILED (" << result.message << ")\n" << colorReset()
+            << "    Exit Code:        " << result.exitCode << "\n"
+            << "    Stored CRC-32:    0x" << std::hex << std::uppercase << std::setfill('0')
+            << std::setw(8) << result.expectedChecksum << std::dec << "\n"
+            << "    Computed CRC-32:  0x" << std::hex << std::uppercase << std::setfill('0')
+            << std::setw(8) << result.computedChecksum << std::dec << "\n"
+            << "    Payload Decoded:  " << result.payloadBytes << " bytes\n";
         return;
     }
 
     out << colorGreen() << colorBold()
         << "[+] Archive Header Integrity: VALID\n" << colorReset()
         << "    Magic Identifier:     JACK\n"
-        << "    Format Version:       v" << static_cast<int>(header.version) << "\n"
-        << "    Original Payload Size:" << header.originalSize << " bytes\n"
-        << "    Unique Symbol Count:  " << header.symbolCount << "\n"
+        << "    Format Version:       v" << static_cast<int>(result.version) << "\n"
+        << "    Original Payload Size:" << result.payloadBytes << " bytes\n"
+        << "    Unique Symbol Count:  " << result.symbolCount << "\n"
         << "    Stored CRC-32:        0x" << std::hex << std::uppercase << std::setfill('0')
-        << std::setw(8) << header.checksumCRC32 << std::dec << "\n"
+        << std::setw(8) << result.expectedChecksum << std::dec << "\n"
+        << "    Computed CRC-32:      0x" << std::hex << std::uppercase << std::setfill('0')
+        << std::setw(8) << result.computedChecksum << std::dec << "\n"
         << colorGreen() << colorBold()
         << "[+] Result: Archive integrity verified successfully (PASS).\n" << colorReset();
 }
