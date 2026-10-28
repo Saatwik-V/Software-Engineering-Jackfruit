@@ -66,5 +66,13 @@ jobs:
         if: matrix.compiler == 'g++'
         run: |
           lcov --capture --directory build --base-directory . --output-file build/coverage.info --ignore-errors inconsistent,gcov
-          lcov --remove build/coverage.info '/usr/*' '*/tests/*' --output-file build/coverage_filtered.info
+          lcov --remove build/coverage.info '/usr/*' '*/tests/*' '*/_deps/*' '*googletest*' --output-file build/coverage_filtered.info
           lcov --list build/coverage_filtered.info
+          genhtml build/coverage_filtered.info --output-directory build/coverage_html
+
+      - name: Upload HTML Coverage Artifact
+        if: matrix.compiler == 'g++'
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: build/coverage_html
