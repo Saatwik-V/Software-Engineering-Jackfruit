@@ -22,17 +22,17 @@ protected:
     std::string archivePath;
 
     void SetUp() override {
-        srcPath = writeTempFile("stat_test_input.txt",
-            "the quick brown fox jumps over the lazy dog "
-            "the quick brown fox jumps over the lazy dog "
-            "the quick brown fox jumps over the lazy dog");
-        archivePath = srcPath + ".jack";
+    std::string corpus;
+    for (int i = 0; i < 300; ++i)
+        corpus += "the quick brown fox jumps over the lazy dog ";
+    srcPath = writeTempFile("stat_test_input.txt", corpus);
+    archivePath = srcPath + ".jack";
 
-        jackfruit::compression::Compressor compressor;
-        auto result = compressor.compressFile(srcPath, archivePath);
-        ASSERT_EQ(result.status, jackfruit::compression::CompressionStatus::SUCCESS)
-            << "SetUp compression failed: " << result.errorMessage;
-    }
+    jackfruit::compression::Compressor compressor;
+    auto result = compressor.compressFile(srcPath, archivePath);
+    ASSERT_EQ(result.status, jackfruit::compression::CompressionStatus::SUCCESS)
+        << "SetUp compression failed: " << result.errorMessage;
+}
 
     void TearDown() override {
         fs::remove(srcPath);
@@ -87,3 +87,4 @@ TEST_F(StatisticsEngineTest, PrintStatsTableDoesNotCrash) {
         jackfruit::stats::StatisticsEngine::printStatsTable(stats, archivePath)
     );
 }
+

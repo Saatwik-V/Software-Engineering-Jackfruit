@@ -47,7 +47,7 @@ jobs:
             --exclude 'build/'
 
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@bfd4e558cda28cda6b5defafb8818d209a4a9e71
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
