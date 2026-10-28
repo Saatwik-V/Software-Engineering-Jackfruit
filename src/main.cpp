@@ -194,10 +194,7 @@ int main(int argc, char* argv[]) {
 
     if (command == "validate") {
         return handleValidate(argc, argv);
-        if (command == "validate") {
-        return handleValidate(argc, argv);
-    }
-
+       }
     if (command == "stat") {       // ADD FROM HERE
         return handleStat(argc, argv);
     }                              // TO HERE
