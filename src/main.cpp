@@ -12,6 +12,7 @@
 #include "compression/compressor.hpp"
 #include "decompression/decoder.hpp"
 #include "security/integrity_validator.hpp"
+#include "stats/statistics_engine.hpp" 
 
 namespace {
 
@@ -139,6 +140,28 @@ int handleValidate(int argc, char* argv[]) {
     return result.exitCode;
 }
 
+int handleStat(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Error: 'stat' requires an archive file path.\n";
+        printUsage(argv[0]);
+        return 1;
+    }
+
+    const std::string archivePath = argv[2];
+    std::cout << "[*] Reading statistics for '" << archivePath << "'...\n";
+
+    try {
+        const auto stats = jackfruit::stats::StatisticsEngine::computeStats(archivePath);
+        jackfruit::stats::StatisticsEngine::printStatsTable(stats, archivePath);
+    } catch (int errCode) {
+        std::cerr << "[-] Failed: invalid or corrupted .jack archive (error "
+                  << errCode << ").\n";
+        return errCode;
+    }
+
+    return 0;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
@@ -171,6 +194,13 @@ int main(int argc, char* argv[]) {
 
     if (command == "validate") {
         return handleValidate(argc, argv);
+        if (command == "validate") {
+        return handleValidate(argc, argv);
+    }
+
+    if (command == "stat") {       // ADD FROM HERE
+        return handleStat(argc, argv);
+    }                              // TO HERE
     }
 
     std::cerr << "Error: Unknown command '" << command << "'.\n";
