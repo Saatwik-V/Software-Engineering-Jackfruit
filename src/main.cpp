@@ -194,13 +194,14 @@ int main(int argc, char* argv[]) {
 
     if (command == "validate") {
         return handleValidate(argc, argv);
-       }
-    if (command == "stat") {       // ADD FROM HERE
+    }
+
+    if (command == "stat") {
         return handleStat(argc, argv);
-    }                              // TO HERE
     }
 
     std::cerr << "Error: Unknown command '" << command << "'.\n";
     printUsage(argv[0]);
     return 1;
 }
+
