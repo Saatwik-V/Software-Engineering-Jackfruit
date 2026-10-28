@@ -4,7 +4,7 @@
  */
 
 #include "cli/menu.hpp"
-
+#include "stats/statistics_engine.hpp"
 #include <chrono>
 #include <filesystem>
 #include <iomanip>

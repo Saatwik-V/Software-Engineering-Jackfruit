@@ -10,7 +10,9 @@ namespace fs = std::filesystem;
 
 // Helper: write a temp text file
 static std::string writeTempFile(const std::string& name, const std::string& content) {
-    const std::string path = (fs::temp_directory_path() / name).string(); // NOSONAR
+    const fs::path dir = fs::path("build") / "test_stats_tmp";
+    fs::create_directories(dir);
+    const std::string path = (dir / name).string();
     std::ofstream f(path);
     f << content;
     return path;
@@ -35,8 +37,7 @@ protected:
 }
 
     void TearDown() override {
-        fs::remove(srcPath);
-        fs::remove(archivePath);
+        fs::remove_all(fs::path("build") / "test_stats_tmp");
     }
 };
 
