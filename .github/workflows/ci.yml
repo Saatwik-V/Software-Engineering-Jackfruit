@@ -65,10 +65,10 @@ jobs:
       - name: Generate Code Coverage Report (GCC)
         if: matrix.compiler == 'g++'
         run: |
-          lcov --capture --directory build --base-directory . --output-file build/coverage.info --ignore-errors inconsistent,gcov
-          lcov --remove build/coverage.info '/usr/*' '*/tests/*' '*/_deps/*' '*googletest*' --output-file build/coverage_filtered.info
+          lcov --capture --directory build --base-directory . --output-file build/coverage.info --ignore-errors inconsistent,gcov,unused
+          lcov --remove build/coverage.info '/usr/*' '*/tests/*' '*/_deps/*' --output-file build/coverage_filtered.info --ignore-errors unused,empty,inconsistent
           lcov --list build/coverage_filtered.info
-          genhtml build/coverage_filtered.info --output-directory build/coverage_html
+          genhtml build/coverage_filtered.info --output-directory build/coverage_html --ignore-errors inconsistent,corrupt,empty
 
       - name: Upload HTML Coverage Artifact
         if: matrix.compiler == 'g++'
