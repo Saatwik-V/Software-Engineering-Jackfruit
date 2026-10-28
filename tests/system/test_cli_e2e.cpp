@@ -98,7 +98,7 @@ TEST_F(SystemCliE2ETest, InteractiveMenuFullLifecycleSimulation) {
     const std::string text = out.str();
 
     EXPECT_NE(text.find("[+] Compression successful!"), std::string::npos);
-    EXPECT_NE(text.find("Archive Summary & Statistics:"), std::string::npos);
+    EXPECT_NE(text.find("Archive Statistics"), std::string::npos);
     EXPECT_NE(text.find("Archive Header Integrity: VALID"), std::string::npos);
     EXPECT_NE(text.find("[+] Decompression successful!"), std::string::npos);
     EXPECT_NE(text.find("Exiting Jackfruit. Goodbye!"), std::string::npos);

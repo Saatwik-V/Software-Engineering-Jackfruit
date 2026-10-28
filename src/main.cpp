@@ -12,6 +12,7 @@
 #include "compression/compressor.hpp"
 #include "decompression/decoder.hpp"
 #include "security/integrity_validator.hpp"
+#include "stats/statistics_engine.hpp" 
 
 namespace {
 
@@ -23,11 +24,13 @@ void printUsage(const char* progName) {
               << "  " << progName << " compress <in> [-o <out>]    Compress an input file into .jack archive\n"
               << "  " << progName << " decompress <in> [-o <out>]  Decompress a .jack archive\n"
               << "  " << progName << " validate <archive.jack>     Validate archive integrity and CRC-32 checksum\n"
+              << "  " << progName << " stat <archive.jack>         Show archive statistics without decompressing\n"
               << "  " << progName << " --help | -h                Display this help message\n\n"
               << "Commands:\n"
               << "  compress    Compress an input file into a .jack binary archive\n"
               << "  decompress  Decompress a .jack binary archive back to original file\n"
               << "  validate    Validate structural integrity and verify IEEE 802.3 CRC-32\n"
+              << "  stat        Show compression statistics for a .jack archive\n"
               << "  menu        Launch the interactive numbered CLI navigation menu\n"
               << "  --help, -h  Display this help message\n";
 }
@@ -139,6 +142,28 @@ int handleValidate(int argc, char* argv[]) {
     return result.exitCode;
 }
 
+int handleStat(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Error: 'stat' requires an archive file path.\n";
+        printUsage(argv[0]);
+        return 1;
+    }
+
+    const std::string archivePath = argv[2];
+    std::cout << "[*] Reading statistics for '" << archivePath << "'...\n";
+
+    try {
+        const auto stats = jackfruit::stats::StatisticsEngine::computeStats(archivePath);
+        jackfruit::stats::StatisticsEngine::printStatsTable(stats, archivePath, std::cout);
+    } catch (int errCode) {
+        std::cerr << "[-] Failed: invalid or corrupted .jack archive (error "
+                  << errCode << ").\n";
+        return errCode;
+    }
+
+    return 0;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
@@ -173,7 +198,12 @@ int main(int argc, char* argv[]) {
         return handleValidate(argc, argv);
     }
 
+    if (command == "stat") {
+        return handleStat(argc, argv);
+    }
+
     std::cerr << "Error: Unknown command '" << command << "'.\n";
     printUsage(argv[0]);
     return 1;
 }
+
