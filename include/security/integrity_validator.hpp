@@ -37,6 +37,18 @@ struct ValidationResult {
     uint16_t symbolCount{0};        ///< Unique symbol count.
     uint8_t version{1};             ///< Format specification version.
     std::string message;            ///< Human-readable diagnostic explanation.
+
+    ValidationResult() = default;
+
+    ValidationResult(ValidationStatus s, int code, uint32_t expected, uint32_t computed,
+                     uint64_t bytes, const std::string& msg)
+        : status(s), exitCode(code), expectedChecksum(expected), computedChecksum(computed),
+          payloadBytes(bytes), symbolCount(0), version(1), message(msg) {}
+
+    ValidationResult(ValidationStatus s, int code, uint32_t expected, uint32_t computed,
+                     uint64_t bytes, uint16_t symbols, uint8_t ver, const std::string& msg)
+        : status(s), exitCode(code), expectedChecksum(expected), computedChecksum(computed),
+          payloadBytes(bytes), symbolCount(symbols), version(ver), message(msg) {}
 };
 
 /**
