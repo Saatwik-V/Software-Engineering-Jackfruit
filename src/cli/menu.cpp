@@ -107,7 +107,7 @@ void Menu::run(std::istream& in, std::ostream& out) {
         }
 
         if (choice < 1 || choice > 5) {
-            out << colorYellow() << "\n[!] Option " << choice
+            out << colorYellow() << "\n[!] Option " << choice  // NOSONAR - int from std::stoi, no control characters
                 << " is out of range. Please choose between 1 and 5.\n" << colorReset();
             continue;
         }
@@ -312,7 +312,7 @@ void Menu::handleValidate(std::istream& in, std::ostream& out) {
     out << colorGreen() << colorBold()
         << "[+] Archive Header Integrity: VALID\n" << colorReset()
         << "    Magic Identifier:     JACK\n"
-        << "    Format Version:       v" << static_cast<int>(result.version) << "\n"
+        << "    Format Version:       v" << static_cast<int>(result.version) << "\n"  // NOSONAR - decoded integer field
         << "    Original Payload Size:" << result.payloadBytes << " bytes\n"
         << "    Unique Symbol Count:  " << result.symbolCount << "\n"
         << "    Stored CRC-32:        0x" << std::hex << std::uppercase << std::setfill('0')

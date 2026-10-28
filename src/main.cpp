@@ -24,11 +24,13 @@ void printUsage(const char* progName) {
               << "  " << progName << " compress <in> [-o <out>]    Compress an input file into .jack archive\n"
               << "  " << progName << " decompress <in> [-o <out>]  Decompress a .jack archive\n"
               << "  " << progName << " validate <archive.jack>     Validate archive integrity and CRC-32 checksum\n"
+              << "  " << progName << " stat <archive.jack>         Show archive statistics without decompressing\n"
               << "  " << progName << " --help | -h                Display this help message\n\n"
               << "Commands:\n"
               << "  compress    Compress an input file into a .jack binary archive\n"
               << "  decompress  Decompress a .jack binary archive back to original file\n"
               << "  validate    Validate structural integrity and verify IEEE 802.3 CRC-32\n"
+              << "  stat        Show compression statistics for a .jack archive\n"
               << "  menu        Launch the interactive numbered CLI navigation menu\n"
               << "  --help, -h  Display this help message\n";
 }

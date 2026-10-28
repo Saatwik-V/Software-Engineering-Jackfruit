@@ -92,3 +92,56 @@ TEST_F(StatisticsEngineTest, PrintStatsTableDoesNotCrash) {
     EXPECT_NE(out.str().find("Archive Statistics"), std::string::npos);
 }
 
+// Table formatting must use megabyte units for megabyte-scale payloads
+TEST_F(StatisticsEngineTest, PrintStatsTableHandlesMegabytePayload) {
+    const fs::path dir = fs::path("build") / "test_stats_tmp"; // NOSONAR - test-only temp dir
+    const std::string bigSrc = (dir / "big_input.txt").string();
+    {
+        std::ofstream f(bigSrc, std::ios::binary);
+        const std::string chunk(1024, 'x');
+        for (int i = 0; i < 1100; ++i) {
+            f << chunk;
+        }
+    }
+    const std::string bigArchive = bigSrc + ".jack";
+
+    jackfruit::compression::Compressor compressor;
+    const auto result = compressor.compressFile(bigSrc, bigArchive);
+    ASSERT_EQ(result.status, jackfruit::compression::CompressionStatus::SUCCESS);
+
+    const auto stats = jackfruit::stats::StatisticsEngine::computeStats(bigArchive);
+    ASSERT_GE(stats.originalBytes, 1024ULL * 1024ULL);
+
+    std::ostringstream out;
+    jackfruit::stats::StatisticsEngine::printStatsTable(stats, bigArchive, out);
+    EXPECT_NE(out.str().find("MB"), std::string::npos);
+}
+
+// Zero-value stats must render without dividing by zero
+TEST(StatisticsEngineStandaloneTest, PrintStatsTableHandlesZeroStats) {
+    const jackfruit::stats::ArchiveStats stats{};
+    std::ostringstream out;
+    jackfruit::stats::StatisticsEngine::printStatsTable(stats, "empty.jack", out);
+    EXPECT_NE(out.str().find("0 B"), std::string::npos);
+}
+
+// An empty payload archive yields zero original size and no ratio
+TEST_F(StatisticsEngineTest, EmptyFileStatsAreZero) {
+    const fs::path dir = fs::path("build") / "test_stats_tmp"; // NOSONAR - test-only temp dir
+    const std::string emptySrc = (dir / "empty_input.txt").string();
+    {
+        std::ofstream f(emptySrc, std::ios::binary);
+    }
+    const std::string emptyArchive = emptySrc + ".jack";
+
+    jackfruit::compression::Compressor compressor;
+    const auto result = compressor.compressFile(emptySrc, emptyArchive);
+    ASSERT_EQ(result.status, jackfruit::compression::CompressionStatus::SUCCESS);
+
+    const auto stats = jackfruit::stats::StatisticsEngine::computeStats(emptyArchive);
+    EXPECT_EQ(stats.originalBytes, 0ULL);
+    EXPECT_DOUBLE_EQ(stats.compressionRatio, 0.0);
+    EXPECT_DOUBLE_EQ(stats.spaceSavedPercent, 0.0);
+    EXPECT_DOUBLE_EQ(stats.bitsPerSymbol, 0.0);
+}
+

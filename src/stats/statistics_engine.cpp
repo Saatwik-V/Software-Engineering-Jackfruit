@@ -49,10 +49,21 @@ static std::string fmtBytes(uint64_t b) {
     } else if (b < 1024ULL * 1024ULL) {
         oss << (b / 1024ULL) << " KB  (" << b << " B)";
     } else {
-        oss << std::fixed << std::setprecision(2)
-            << (static_cast<double>(b) / (1024.0 * 1024.0))
-            << " MB  (" << b << " B)";
+        oss << std::fixed << std::setprecision(2);
+        oss << (static_cast<double>(b) / (1024.0 * 1024.0)) << " MB  (" << b << " B)";
     }
+    return oss.str();
+}
+
+static std::string fmtDecimal(double value, int precision) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(precision) << value;
+    return oss.str();
+}
+
+static std::string fmtCrc32(uint32_t crc) {
+    std::ostringstream oss;
+    oss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(8) << crc;
     return oss.str();
 }
 
@@ -62,32 +73,23 @@ void StatisticsEngine::printStatsTable(const ArchiveStats& stats,
     constexpr int W = 30;
     const std::string SEP(52, '=');
 
+    const auto row = [&out](const std::string& label, const std::string& value) {
+        out << "  " << std::left << std::setw(W) << label << value << "\n";
+    };
+
     out << "\n" << SEP << "\n";
     out << "  Archive Statistics\n";
     out << "  File: " << archivePath << "\n";
     out << SEP << "\n";
 
-    out << std::left
-        << "  " << std::setw(W) << "Original Size"
-                << fmtBytes(stats.originalBytes) << "\n"
-        << "  " << std::setw(W) << "Compressed Size"
-                << fmtBytes(stats.compressedBytes) << "\n"
-        << "  " << std::setw(W) << "Compression Ratio"
-                << std::fixed << std::setprecision(2)
-                << stats.compressionRatio << "x\n"
-        << "  " << std::setw(W) << "Space Saved"
-                << std::fixed << std::setprecision(1)
-                << stats.spaceSavedPercent << "%\n"
-        << "  " << std::setw(W) << "Unique Symbols"
-                << stats.symbolCount << "\n"
-        << "  " << std::setw(W) << "Total Encoded Bits"
-                << stats.totalBits << "\n"
-        << "  " << std::setw(W) << "Avg Bits / Symbol"
-                << std::fixed << std::setprecision(3)
-                << stats.bitsPerSymbol << "\n"
-        << "  " << std::setw(W) << "CRC-32 Checksum"
-                << "0x" << std::hex << std::uppercase << std::setfill('0')
-                << std::setw(8) << stats.checksumCRC32 << std::dec << "\n";
+    row("Original Size", fmtBytes(stats.originalBytes));
+    row("Compressed Size", fmtBytes(stats.compressedBytes));
+    row("Compression Ratio", fmtDecimal(stats.compressionRatio, 2) + "x");
+    row("Space Saved", fmtDecimal(stats.spaceSavedPercent, 1) + "%");
+    row("Unique Symbols", std::to_string(stats.symbolCount));
+    row("Total Encoded Bits", std::to_string(stats.totalBits));
+    row("Avg Bits / Symbol", fmtDecimal(stats.bitsPerSymbol, 3));
+    row("CRC-32 Checksum", fmtCrc32(stats.checksumCRC32));
 
     out << SEP << "\n\n";
 }

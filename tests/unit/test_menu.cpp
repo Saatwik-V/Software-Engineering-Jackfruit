@@ -197,6 +197,18 @@ TEST_F(MenuTest, StatisticsMissingArchiveReturnsError) {
     EXPECT_NE(output.find("[-] Error:"), std::string::npos);
 }
 
+TEST_F(MenuTest, StatisticsCorruptArchiveReportsFailure) {
+    Menu menu;
+    menu.setColored(false);
+    std::istringstream in("3\n" + corruptArchive_ + "\n5\n");
+    std::ostringstream out;
+
+    menu.run(in, out);
+    const std::string output = out.str();
+
+    EXPECT_NE(output.find("[-] Failed: invalid or corrupted .jack archive"), std::string::npos);
+}
+
 TEST_F(MenuTest, ValidateValidArchivePasses) {
     Menu menu;
     menu.setColored(false);
