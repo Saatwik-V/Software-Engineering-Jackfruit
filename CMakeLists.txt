@@ -26,6 +26,7 @@ add_library(jackfruit_core STATIC
     src/archive/archive_writer.cpp
     src/decompression/decoder.cpp
     src/cli/menu.cpp
+    src/security/integrity_validator.cpp
 )
 target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -47,10 +48,10 @@ if(BUILD_TESTING)
     set(gtest_disable_pthreads ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
 
-    # Disable strict ANSI mode for GoogleTest on MinGW to expose Windows POSIX symbols
+    # Disable strict ANSI mode for GoogleTest on MinGW if needed without breaking modern GCC
     if(MINGW)
-        target_compile_options(gtest PRIVATE -U__STRICT_ANSI__)
-        target_compile_options(gtest_main PRIVATE -U__STRICT_ANSI__)
+        target_compile_options(gtest PRIVATE -Wno-error=cpp -Wno-error)
+        target_compile_options(gtest_main PRIVATE -Wno-error=cpp -Wno-error)
     endif()
 
     # Test executable (Unit, Integration, and System E2E)
@@ -67,6 +68,7 @@ if(BUILD_TESTING)
         tests/unit/test_crc32.cpp
         tests/unit/test_archive_writer.cpp
         tests/unit/test_menu.cpp
+        tests/unit/test_integrity.cpp
         tests/integration/test_roundtrip.cpp
         tests/system/test_cli_e2e.cpp
     )

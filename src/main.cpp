@@ -11,20 +11,23 @@
 #include "cli/menu.hpp"
 #include "compression/compressor.hpp"
 #include "decompression/decoder.hpp"
+#include "security/integrity_validator.hpp"
 
 namespace {
 
 void printUsage(const char* progName) {
     std::cout << "Jackfruit — Lossless Huffman File Compressor (v0.1.0)\n\n"
               << "Usage:\n"
-              << "  " << progName << "                           Launch interactive terminal menu\n"
-              << "  " << progName << " --menu | -m               Launch interactive terminal menu\n"
-              << "  " << progName << " compress <in> [-o <out>]   Compress an input file into .jack archive\n"
-              << "  " << progName << " decompress <in> [-o <out>] Decompress a .jack archive\n"
-              << "  " << progName << " --help | -h               Display this help message\n\n"
+              << "  " << progName << "                            Launch interactive terminal menu\n"
+              << "  " << progName << " --menu | -m                Launch interactive terminal menu\n"
+              << "  " << progName << " compress <in> [-o <out>]    Compress an input file into .jack archive\n"
+              << "  " << progName << " decompress <in> [-o <out>]  Decompress a .jack archive\n"
+              << "  " << progName << " validate <archive.jack>     Validate archive integrity and CRC-32 checksum\n"
+              << "  " << progName << " --help | -h                Display this help message\n\n"
               << "Commands:\n"
               << "  compress    Compress an input file into a .jack binary archive\n"
               << "  decompress  Decompress a .jack binary archive back to original file\n"
+              << "  validate    Validate structural integrity and verify IEEE 802.3 CRC-32\n"
               << "  menu        Launch the interactive numbered CLI navigation menu\n"
               << "  --help, -h  Display this help message\n";
 }
@@ -120,6 +123,22 @@ int handleDecompress(int argc, char* argv[]) {
     return 0;
 }
 
+int handleValidate(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Error: 'validate' requires an archive file path.\n";
+        printUsage(argv[0]);
+        return 1;
+    }
+
+    const std::string archivePath = argv[2];
+    std::cout << "[*] Validating archive '" << archivePath << "'...\n";
+
+    const auto result = jackfruit::security::IntegrityValidator::validateArchive(archivePath);
+    std::cout << jackfruit::security::IntegrityValidator::formatValidationReport(result, true);
+
+    return result.exitCode;
+}
+
 } // namespace
 
 int main(int argc, char* argv[]) {
@@ -148,6 +167,10 @@ int main(int argc, char* argv[]) {
 
     if (command == "decompress") {
         return handleDecompress(argc, argv);
+    }
+
+    if (command == "validate") {
+        return handleValidate(argc, argv);
     }
 
     std::cerr << "Error: Unknown command '" << command << "'.\n";
