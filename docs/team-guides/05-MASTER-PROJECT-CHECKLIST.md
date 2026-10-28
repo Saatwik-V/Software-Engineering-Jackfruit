@@ -132,10 +132,10 @@ The project is governed by a 2-Part evaluation structure:
 - [ ] Final architecture and RTM reconciliation.
 
 #### Tanmayi Tasks (Coverage & Test Execution):
-- [ ] Wire `gcov`/`lcov` coverage reporting into GitHub Actions CI pipeline.
-- [ ] Expand integration and system test suites (`tests/integration/`, `tests/system/`).
-- [ ] Ensure codebase achieves **≥ 80% line coverage** and **≥ 70% branch coverage**.
-- [ ] Execute 10 manual test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) and document actual results.
+- [x] Wire `gcov`/`lcov` coverage reporting into GitHub Actions CI pipeline.
+- [x] Expand integration and system test suites (`tests/integration/`, `tests/system/`).
+- [x] Ensure codebase achieves **≥ 80% line coverage** and **≥ 70% branch coverage**.
+- [x] Execute 10 manual test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) and document actual results.
 
 #### Yuvraj Tasks (UC-03 Statistics & Packaging):
 - [ ] Implement `StatisticsEngine` (`src/stats/statistics_engine.cpp`) for original size, compressed size, and ratio calculations.
