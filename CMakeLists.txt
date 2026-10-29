@@ -32,6 +32,17 @@ add_library(jackfruit_core STATIC
 )
 target_include_directories(jackfruit_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Security Sanitizers Configuration (ASan & UBSan)
+option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+if(ENABLE_SANITIZERS)
+    if(MSVC)
+        add_compile_options(/fsanitize=address)
+    else()
+        add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address,undefined)
+    endif()
+endif()
+
 # Main executable (properly linking jackfruit_core)
 add_executable(jackfruit src/main.cpp)
 target_link_libraries(jackfruit PRIVATE jackfruit_core)
@@ -72,6 +83,7 @@ if(BUILD_TESTING)
         tests/unit/test_menu.cpp
         tests/unit/test_integrity.cpp
         tests/unit/test_statistics.cpp 
+        tests/unit/test_fuzz.cpp
         tests/integration/test_roundtrip.cpp
         tests/system/test_cli_e2e.cpp
     )

@@ -146,8 +146,8 @@ The project is governed by a 2-Part evaluation structure:
 #### Vibhav Tasks (UC-04 Integrity & Security Hardening):
 - [x] Implement `IntegrityValidator` (`src/security/integrity_validator.cpp`) for header checks and payload CRC-32 verification.
 - [x] Wire `jackfruit validate <archive.jack>` command (returns exit code 0 on valid, 3 on corruption).
-- [ ] Set up AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in CI pipeline.
-- [ ] Execute malformed archive fuzz test suite and document findings in `docs/validation/security-review.md`.
+- [x] Set up AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in CI pipeline.
+- [x] Execute malformed archive fuzz test suite and document findings in `docs/validation/security-review.md`.
 
 #### Sprint 2 Milestone Deliverables:
 - [ ] All 4 use cases functioning seamlessly from the interactive CLI menu.
