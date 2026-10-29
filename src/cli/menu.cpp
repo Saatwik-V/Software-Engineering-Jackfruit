@@ -266,8 +266,8 @@ void Menu::handleStatistics(std::istream& in, std::ostream& out) {
     }
 
     try {
-        const auto stats = stats::StatisticsEngine::computeStats(archivePath);
-        stats::StatisticsEngine::printStatsTable(stats, archivePath, out);
+        const auto archiveStats = jackfruit::stats::StatisticsEngine::computeStats(archivePath);
+        jackfruit::stats::StatisticsEngine::printStatsTable(archiveStats, archivePath, out);
     } catch (int errCode) {
         out << colorRed() << "[-] Failed: invalid or corrupted .jack archive (error "
             << errCode << ").\n" << colorReset();
