@@ -152,21 +152,22 @@ The project is governed by a 2-Part evaluation structure:
 #### Sprint 2 Milestone Deliverables:
 - [x] All 4 use cases functioning seamlessly from the interactive CLI menu.
 - [x] SonarCloud quality gate passing with zero critical vulnerabilities (A Rating, Quality Gate PASSED).
-- [x] CI pipeline completely green with automated test coverage report (Run ID 40833344261).
-- [ ] **Record 2-Minute Video Demo:** Comprehensive walk-through of Compression, Statistics, Integrity Validation, and Decompression with error handling. Upload video to `docs/media/sprint-2-demo.mp4`.
-- [ ] Document any deviations from SRS/SAD in `docs/deviations.md`.
-- [ ] **Development Freeze (30th Oct 2026):** Codebase locked, ready for final presentation and evaluation.
+- [x] CI pipeline completely green with automated test coverage report (Run ID 41228069996).
+- [x] **Record 2-Minute Video Demo:** Comprehensive walk-through of Compression, Statistics, Integrity Validation, and Decompression with error handling. Upload video to `docs/media/sprint-2-demo.mp4` [Pushed in commit 5b890bf].
+- [x] Document any deviations from SRS/SAD in `docs/deviations.md`.
+- [x] **Development Freeze (30th Oct 2026):** Codebase locked, ready for final presentation and evaluation.
 
 ---
 
 ## 4. Final Deliverable & Presentation Readiness
 
-- [ ] **GitHub Repository Evidence:** Balanced commit graph across all 4 contributors, merged PRs with review threads, green CI runs.
-- [ ] **Documentation Suite:**
+- [x] **GitHub Repository Evidence:** Balanced commit graph across all 4 contributors, merged PRs with review threads, green CI runs.
+- [x] **Documentation Suite:**
   - `docs/srs/srs-v0.1.pdf` (SRS)
   - `docs/design/architecture-v0.1.pdf` (SAD)
   - `docs/validation/test-plan-v0.1.pdf` (Test Plan)
   - `docs/validation/test-results.md` (Executed test records)
   - `docs/validation/security-review.md` (Security & sanitizer findings)
-- [ ] **Video Demos:** Sprint 1 (1 min) and Sprint 2 (2 min) videos present and accessible in the repository.
-- [ ] **Demo Preparation:** All 4 members prepared to explain their primary module, secondary lead area, and neighbor integration live.
+  - `docs/deviations.md` (Deviations report)
+- [x] **Video Demos:** Sprint 1 (1 min: `docs/media/sprint-1-demo.mp4`) and Sprint 2 (2 min: `docs/media/sprint-2-demo.mp4`) present and accessible in the repository.
+- [x] **Demo Preparation:** All 4 members prepared to explain their primary module, secondary lead area, and neighbor integration live.
