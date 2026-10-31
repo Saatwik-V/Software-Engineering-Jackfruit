@@ -128,31 +128,31 @@ The project is governed by a 2-Part evaluation structure:
 #### Saatwik Tasks (CLI & Performance):
 - [x] Build interactive CLI terminal navigation menu (`src/cli/menu.cpp`).
 - [x] Measure and record performance benchmark against 5MB dataset (`JACK-NF-001`).
-- [ ] Integrate all 4 module flows into unified `jackfruit` executable.
-- [ ] Final architecture and RTM reconciliation.
+- [x] Integrate all 4 module flows into unified `jackfruit` executable (`src/main.cpp`).
+- [x] Final architecture and RTM reconciliation (`docs/validation/performance-baseline.md`).
 
 #### Tanmayi Tasks (Coverage & Test Execution):
 - [x] Wire `gcov`/`lcov` coverage reporting into GitHub Actions CI pipeline.
 - [x] Expand integration and system test suites (`tests/integration/`, `tests/system/`).
-- [x] Ensure codebase achieves **≥ 80% line coverage** and **≥ 70% branch coverage**.
-- [x] Execute 10 manual test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) and document actual results.
+- [x] Ensure codebase achieves **≥ 80% line coverage** and **≥ 70% branch coverage** (Achieved: 87.1% Line, 100% Function).
+- [x] Execute 10 manual test cases (`TC-COMP`, `TC-DECOMP`, `TC-STAT`, `TC-VALID`, `TC-PERF`, `TC-SEC`) and document actual results (`docs/validation/test-results.md`).
 
 #### Yuvraj Tasks (UC-03 Statistics & Packaging):
-- [ ] Implement `StatisticsEngine` (`src/stats/statistics_engine.cpp`) for original size, compressed size, and ratio calculations.
-- [ ] Wire `jackfruit stat <archive.jack>` command and display screen.
-- [ ] Configure SonarCloud analysis workflow in GitHub Actions.
-- [ ] Create automated release packaging step in CI (distributable zip artifact).
+- [x] Implement `StatisticsEngine` (`src/stats/statistics_engine.cpp`) for original size, compressed size, and ratio calculations [Merged in PR #56].
+- [x] Wire `jackfruit stat <archive.jack>` command and display screen [Merged in PR #56].
+- [x] Configure SonarCloud analysis workflow in GitHub Actions (`.github/workflows/sonarcloud.yml`) [Merged in PR #56].
+- [x] Create automated release packaging step in CI (distributable zip artifact: `jackfruit-v1.0-linux-x86_64.zip`) [Merged in PR #56].
 
 #### Vibhav Tasks (UC-04 Integrity & Security Hardening):
-- [x] Implement `IntegrityValidator` (`src/security/integrity_validator.cpp`) for header checks and payload CRC-32 verification.
-- [x] Wire `jackfruit validate <archive.jack>` command (returns exit code 0 on valid, 3 on corruption).
-- [x] Set up AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in CI pipeline.
-- [x] Execute malformed archive fuzz test suite and document findings in `docs/validation/security-review.md`.
+- [x] Implement `IntegrityValidator` (`src/security/integrity_validator.cpp`) for header checks and payload CRC-32 verification [Merged in PR #52].
+- [x] Wire `jackfruit validate <archive.jack>` command (returns exit code 0 on valid, 3 on corruption) [Merged in PR #52].
+- [x] Set up AddressSanitizer (ASan) and UndefinedBehaviorSanitizer (UBSan) in CI pipeline [Merged in PR #57].
+- [x] Execute malformed archive fuzz test suite and document findings in `docs/validation/security-review.md` [Merged in PR #57].
 
 #### Sprint 2 Milestone Deliverables:
-- [ ] All 4 use cases functioning seamlessly from the interactive CLI menu.
-- [ ] SonarCloud quality gate passing with zero critical vulnerabilities.
-- [ ] CI pipeline completely green with automated test coverage report.
+- [x] All 4 use cases functioning seamlessly from the interactive CLI menu.
+- [x] SonarCloud quality gate passing with zero critical vulnerabilities (A Rating, Quality Gate PASSED).
+- [x] CI pipeline completely green with automated test coverage report (Run ID 40833344261).
 - [ ] **Record 2-Minute Video Demo:** Comprehensive walk-through of Compression, Statistics, Integrity Validation, and Decompression with error handling. Upload video to `docs/media/sprint-2-demo.mp4`.
 - [ ] Document any deviations from SRS/SAD in `docs/deviations.md`.
 - [ ] **Development Freeze (30th Oct 2026):** Codebase locked, ready for final presentation and evaluation.
